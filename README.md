@@ -1,141 +1,124 @@
 # Funds Assistant
 
-> 自选基金实时行情驾驶舱 — Bloomberg 风格暗色终端界面，实时展示估值涨跌幅与持仓收益。
+> 基金行情查看 Web 应用。以自选基金为核心，提供实时估值、收益计算、基金详情和顶部市场走马灯。
 
-## 功能特性
+## 项目定位
 
-- **实时行情**：每分钟自动拉取东方财富估值数据，交易时段自动刷新
-- **多类型基金支持**：
-  - 普通场外基金：优先展示实时估值（`GSZ / GSZZL / GZTIME`）
-  - 场内基金 / ETF：使用交易所实时价格（`NEWPRICE / CHANGERATIO / HQDATE`）
-  - 估值缺失时自动回退至上一日净值
-- **持仓收益计算**：填写份额与成本价，自动计算今日估值收益与累计持有收益
-- **全局指数走马灯**：顶部实时滚动展示大盘指数行情
-- **基金搜索**：支持按拼音、汉字、基金代码模糊搜索，快速添加自选
-- **拖拽排序**：基金列表支持拖拽调整顺序
-- **多维度排序**：可按涨跌幅、收益额等字段单独排序
-- **账号云同步**：注册登录后，自选基金跨设备实时同步
-- **游客模式**：未登录时使用 `sessionStorage` 本地存储自选，登录后支持一键导入
-- **AI 洞察抽屉**：内置 AI 决策面板入口（即将上线）
-- **市场状态感知**：自动识别节假日与交易时间，休市期间停止轮询
+Funds Assistant 是一个面向基金跟踪场景的前端应用，重点不是做资讯门户，而是把用户最常看的几件事放在同一个界面里：
+
+- 自选基金列表
+- 实时估值与涨跌幅
+- 持仓收益
+- 基金详情走势图
+- 顶部全球指数走马灯
+- 登录后的云端自选同步
+
+整体界面采用深色终端风格，当前主界面已经是 `header + aside + section` 的两栏结构。
+
+## 当前功能
+
+- 实时展示自选基金估值、涨跌幅、估算收益和更新时间
+- 支持基金搜索，并从搜索结果直接加入自选
+- 支持游客模式和登录态两套自选数据路径
+- 登录后自选基金可通过 Supabase 云端同步
+- 基金详情页支持区间切换和走势曲线查看
+- 详情页底部展示基金经理、基金类型、基金规模、交易状态、最新净值日等摘要信息
+- 顶部滚动展示主要市场指数
 
 ## 技术栈
 
-| 层 | 技术 |
+| 类别 | 方案 |
 |---|---|
-| 前端框架 | Vue 3 + `<script setup>` + TypeScript |
-| 构建工具 | Vite 8 |
-| 样式 | UnoCSS + CSS Design Tokens |
+| 前端 | Vue 3 + TypeScript |
+| 构建 | Vite |
 | 状态管理 | Pinia |
-| 数据请求 | TanStack Query (`@tanstack/vue-query`) + Axios |
-| 身份鉴权 | Supabase Auth（邮箱登录 + 密码找回） |
-| 数据库 | Supabase (PostgreSQL) |
-| 部署平台 | Vercel（Serverless Functions + Proxy Rewrites） |
-| 工具链 | ESLint v10 · oxfmt · vue-tsc · Vitest |
+| 数据请求 | TanStack Query + Axios |
+| 图表 | ECharts |
+| 样式 | UnoCSS + CSS Tokens |
+| 鉴权与数据 | Supabase |
+| 本地开发网关 | Vercel Functions + rewrites |
+| 测试 | Vitest + Vue Test Utils |
 
 ## 数据来源
 
-行情数据经 Vercel Proxy Rewrite 透明转发至东方财富，**无需自行申请 API Key**：
+基金与指数行情主要来自东方财富相关接口，应用内通过本地 `api/` 层与代理转发统一接入。
 
-| 路径 | 上游 |
-|---|---|
-| `/api/fund/*` | `fundmobapi.eastmoney.com`（基金估值主接口） |
-| `/api/fundgz/*` | `fundgz.1234567.com.cn`（估值补全接口） |
-| `/api/search/*` | `fundsuggest.eastmoney.com`（基金搜索） |
-| `/api/index/*` | `push2delay.eastmoney.com`（大盘指数快照与分时趋势） |
-| `/api/kline/*` | `push2his.eastmoney.com`（历史 K 线，预留给详情图表） |
+核心规则：
 
-## 运行开发
+- 普通基金优先使用实时估值字段
+- ETF / 场内基金优先使用交易所实时价格字段
+- 当主接口缺失估值时，再走补全接口
+- 页面组件不直接分支处理不同基金类型，统一走行情解析逻辑
 
-**环境要求**：Node ≥ 20.19 · pnpm
+## 本地运行
+
+环境要求：
+
+- Node.js `>= 20.19.0`
+- pnpm
+
+安装依赖：
 
 ```bash
-# 安装依赖
 pnpm install
-
-# 拉取 Vercel 环境变量（首次运行需登录 Vercel CLI）
-pnpm vercel:pull-env
 ```
 
-### 开发模式
+推荐开发方式：
 
 ```bash
-# 默认（推荐）：启动 vercel dev，同时提供前端 + /api/* 本地函数
 pnpm dev
+```
 
-# 纯 UI 调试（不含 api/ 本地函数，登录/同步接口将返回 404）
+这会启动本地 `vercel dev`，同时提供前端页面和 `api/` 下的本地接口。
+
+如果只想调页面样式，也可以使用：
+
+```bash
 pnpm dev:ui
 ```
 
-> `pnpm dev` 通过 `scripts/dev-vercel.sh` 启动 `vercel dev`；
-> Vercel 在本地再通过 `vercel.json → devCommand` 调用 `pnpm dev:ui` 作为前端服务，避免递归。
+注意：这个模式不包含本地函数，登录、自选同步等接口可能返回 `404`。
 
-### 其他命令
+## 常用命令
 
 ```bash
-pnpm build        # 类型检查 + 生产构建
-pnpm type-check   # vue-tsc + tsc（含 api/）
-pnpm lint         # ESLint v10
-pnpm lint:fix     # ESLint 自动修复
-pnpm fmt          # oxfmt 格式化
-pnpm test:run     # Vitest 单次运行
-pnpm test         # Vitest 监视模式
+pnpm dev
+pnpm dev:ui
+pnpm build
+pnpm type-check
+pnpm lint
+pnpm test:run
 ```
 
-## 项目结构
+## 目录结构
 
-```
-funds/
-├── api/               # Vercel Serverless Functions（auth · me · 转发代理）
-├── src/
-│   ├── pages/         # 页面（多单词命名，Page 后缀）
-│   │   ├── Dashboard/         # 主行情驾驶舱
-│   │   └── Authentication/    # 登录 · 密码找回 · OAuth 回调
-│   ├── components/    # 纯展示 UI 组件
-│   ├── composables/   # 业务逻辑（按领域分目录）
-│   │   ├── fund/      # 行情拉取 · Quote 解析 · 排序
-│   │   ├── watchlist/ # 游客自选管理
-│   │   ├── auth/      # 登录态
-│   │   ├── index/     # 大盘指数
-│   │   ├── holiday/   # 节假日判断
-│   │   ├── preferences/ # 用户偏好持久化
-│   │   └── drag/      # 拖拽排序
-│   ├── stores/        # Pinia（auth.ts）
-│   ├── types/         # 类型定义（按领域分文件）
-│   ├── utils/         # 工具函数（marketStatus · formatters · storage）
-│   └── styles/        # CSS Design Tokens（tokens.css）
-├── supabase/          # 数据库迁移文件
-├── vercel.json        # 部署与代理规则
-├── vite.config.ts
-└── uno.config.ts
+```text
+api/                    本地函数与代理入口
+docs/                   设计文档、迁移文档、实现记录
+public/                 静态资源
+scripts/                本地开发脚本
+src/
+  api/                  前端请求层
+  components/           通用组件
+  composables/          业务逻辑
+  constants/            常量
+  layouts/              页面布局
+  pages/                页面与页面级组件
+  stores/               Pinia 状态
+  styles/               全局样式令牌
+  types/                类型定义
+  utils/                工具函数
+supabase/               数据库迁移与配置
 ```
 
-## 行情解析优先级
+## 当前仓库说明
 
-行情字段回退逻辑集中在 `src/composables/fund/quote.ts`，优先级如下：
+- 当前远端仓库：`https://github.com/daiwanxing/Funds-Assistant`
+- 当前仓库历史已重置为新的起点提交
+- README 内容以当前项目状态为准，不再沿用旧仓库描述
 
-1. **实时估值**（`GSZ / GSZZL / GZTIME`）— 适用于普通开放式基金  
-2. **交易所实时价格**（`NEWPRICE / CHANGERATIO / HQDATE`）— 适用于 ETF / 场内基金  
-3. **上一日净值**（`NAV / NAVCHGRT`）— 估值与交易所数据均缺失时兜底
+## 补充说明
 
-## 身份与数据持久化规则
-
-| 场景 | 自选存储位置 |
-|---|---|
-| 已登录 | Supabase 云端（`/api/me/watchlist`） |
-| 游客 | `sessionStorage`（仅当前标签页） |
-| 本地偏好 | `localStorage`（排序、显示开关等非账号数据） |
-
-## Star History
-
-<a href="https://www.star-history.com/#x2rr/funds&type=date&legend=top-left">
- <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=x2rr/funds&type=date&theme=dark&legend=top-left" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=x2rr/funds&type=date&legend=top-left" />
-   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=x2rr/funds&type=date&legend=top-left" />
- </picture>
-</a>
-
-## 隐私协议
-
-[点击跳转](https://x2rr.github.io/funds/privacy.html)
+- 游客模式下，自选基金只保存在 `sessionStorage`
+- 登录后，自选基金以 `/api/me/bootstrap` 和 `/api/me/watchlist` 为主数据源
+- `localStorage` 只承担本地偏好和非账号信息，不再存登录用户自选
