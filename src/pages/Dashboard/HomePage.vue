@@ -114,17 +114,17 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="dashboard">
-    <header class="market-ticker">
+  <div class="dashboard-page">
+    <header class="dashboard-page__ticker">
       <GlobalTicker
         :data-list="globalIndices.dataList.value"
         :is-loading="globalIndices.isLoading.value"
       />
     </header>
 
-    <div class="dashboard-content">
-      <aside class="watchlist-aside">
-        <div class="watchlist-panel">
+    <div class="dashboard-page__content">
+      <aside class="dashboard-page__sidebar">
+        <div class="dashboard-page__sidebar-body">
           <WatchlistHeader
             v-model:query="searchQuery"
             :is-searching="isSearching"
@@ -132,7 +132,7 @@ onMounted(() => {
             :result-count="searchOptions?.length"
           />
 
-          <div class="watchlist-scroll-region">
+          <div class="dashboard-page__sidebar-scroll">
             <template v-if="searchQuery">
               <FundSearchList
                 :query="searchQuery"
@@ -153,12 +153,12 @@ onMounted(() => {
           </div>
         </div>
 
-        <div class="personal-info-panel">
+        <div class="dashboard-page__sidebar-footer">
           <UserBar @login="authDialogOpen = true" />
         </div>
       </aside>
 
-      <section class="fund-detail-section">
+      <section class="dashboard-page__detail">
         <FundDetail :code="selectedFundCode" />
       </section>
     </div>
@@ -174,74 +174,4 @@ onMounted(() => {
   </div>
 </template>
 
-<style scoped>
-.dashboard {
-  display: grid;
-  grid-template-rows: 48px 1fr;
-  grid-template-columns: minmax(0, 1fr);
-  grid-template-areas:
-    "ticker"
-    "content";
-  height: 100vh;
-  min-width: 1000px;
-  overflow-x: hidden;
-  overflow-y: hidden;
-  background-color: var(--bg-0);
-  color: var(--text-primary);
-  font-family: var(--font-sans);
-}
-
-/* 移除隐藏控制，保证 60 40 划分 */
-
-.market-ticker {
-  grid-area: ticker;
-  background-color: var(--bg-1);
-  border-bottom: 1px solid var(--border-subtle);
-}
-
-.dashboard-content {
-  grid-area: content;
-  display: grid;
-  grid-template-columns: 380px minmax(0, 1fr);
-  min-height: 0;
-  min-width: 0;
-  overflow: hidden;
-}
-
-.watchlist-aside {
-  min-height: 0;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  background-color: var(--bg-1);
-  border-right: 1px solid var(--border-subtle);
-}
-
-.watchlist-panel {
-  flex: 1;
-  min-height: 0;
-  display: flex;
-  flex-direction: column;
-  background-color: var(--bg-1);
-}
-
-.watchlist-scroll-region {
-  flex: 1;
-  min-height: 0;
-  overflow-y: auto;
-}
-
-.personal-info-panel {
-  flex: 0 0 48px;
-  background-color: var(--bg-1);
-  border-top: 1px solid var(--border-subtle);
-}
-
-.fund-detail-section {
-  min-height: 0;
-  min-width: 0;
-  overflow-x: hidden;
-  overflow-y: auto;
-  background-color: var(--bg-0);
-}
-</style>
+<style scoped lang="scss" src="./HomePage.scss"></style>

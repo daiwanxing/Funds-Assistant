@@ -22,53 +22,52 @@ const clearQuery = () => {
 </script>
 
 <template>
-  <div class="px-3 pt-3 pb-3 flex flex-col gap-3 shrink-0 bg-[var(--bg-0)]">
-    <div class="flex items-center justify-between px-1 min-h[24px]">
-      <div class="flex items-center gap-2 text-t text-[13px] font-medium transition-colors">
-        <BarChart2 class="w-4 h-4 text-accent" />
-        <span class="text-white/80 tracking-wide font-sans">{{ query ? '搜索基金库' : '自选持仓' }}</span>
+  <div class="watchlist-header">
+    <div class="watchlist-header__summary">
+      <div class="watchlist-header__identity">
+        <BarChart2 class="watchlist-header__icon" />
+        <span class="watchlist-header__title">{{ query ? '搜索基金库' : '自选持仓' }}</span>
       </div>
-      <div>
+      <div class="watchlist-header__count">
         <span
           v-if="query && resultCount !== undefined"
-          class="px-2 py-0.5 rounded-full bg-white/5 text-[11px] text-white/40"
+          class="watchlist-header__count-badge"
         >
           {{ resultCount }} 个结果
         </span>
         <span
           v-else-if="!query"
-          class="px-2 py-0.5 rounded-full bg-white/5 text-[11px] text-white/40"
+          class="watchlist-header__count-badge"
         >
           {{ savedCount }}
         </span>
       </div>
     </div>
-    
 
-    <div class="relative w-full h-[36px] bg-[#1a1a1c] border border-white/5 rounded-lg flex items-center shadow-inner overflow-hidden focus-within:border-[#3B82F6]/50 transition-colors group">
-      <Search
-        class="w-4 h-4 ml-3 shrink-0 text-white/30 group-focus-within:text-[#3B82F6] transition-colors"
-      />
-      
-      <input 
-        :value="query" 
-        @input="handleInput" 
-        class="w-full h-full bg-transparent border-none outline-none px-2.5 text-white/80 text-[13px] placeholder:text-white/30 font-sans"
+    <div class="watchlist-header__search-field">
+      <Search class="watchlist-header__search-icon" />
+
+      <input
+        :value="query"
+        class="watchlist-header__search-input"
         placeholder="搜索基金名称、代码或公司"
+        @input="handleInput"
       >
-      
-      <button 
-        v-if="query" 
-        @click="clearQuery" 
-        class="w-5 h-5 mr-2 shrink-0 rounded-full flex items-center justify-center bg-white/10 hover:bg-white/20 text-white/60 transition-colors cursor-pointer"
+
+      <button
+        v-if="query"
+        class="watchlist-header__clear-button"
+        @click="clearQuery"
       >
-        <X class="w-3 h-3" />
+        <X class="watchlist-header__clear-icon" />
       </button>
 
       <div
         v-else
-        class="w-5 h-5 mr-2"
+        class="watchlist-header__clear-placeholder"
       />
     </div>
   </div>
 </template>
+
+<style scoped lang="scss" src="./WatchlistHeader.scss"></style>

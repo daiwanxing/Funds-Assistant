@@ -23,15 +23,15 @@ const totalRatio = computed(() => {
 <template>
   <section
     data-test="fund-holdings-strip"
-    class="px-5 py-4"
+    class="fund-holdings"
   >
-    <div class="flex items-center justify-between gap-4 mb-4">
-      <span class="text-[11px] text-white/40 font-sans tracking-[0.18em]">
+    <div class="fund-holdings__header">
+      <span class="fund-holdings__title">
         持仓明细
       </span>
       <span
         v-if="quarter"
-        class="text-[10px] text-white/25 font-sans tracking-wide"
+        class="fund-holdings__quarter"
       >
         {{ quarter }}
       </span>
@@ -39,81 +39,81 @@ const totalRatio = computed(() => {
 
     <div
       v-if="isLoading"
-      class="grid grid-cols-3 gap-3"
+      class="fund-holdings__grid"
     >
       <div
         v-for="i in 3"
         :key="i"
-        class="animate-pulse rounded-2xl border border-white/[0.06] bg-white/[0.02] p-3"
+        class="fund-holdings__skeleton-card"
       >
-        <div class="h-3 w-12 rounded bg-white/[0.06] mb-3" />
-        <div class="h-3 w-24 rounded bg-white/[0.04] mb-2" />
-        <div class="h-2 rounded-full bg-white/[0.04]" />
+        <div class="fund-holdings__skeleton-line fund-holdings__skeleton-line--rank" />
+        <div class="fund-holdings__skeleton-line fund-holdings__skeleton-line--name" />
+        <div class="fund-holdings__skeleton-line fund-holdings__skeleton-line--bar" />
       </div>
     </div>
 
     <div
       v-else-if="holdings.length === 0"
-      class="flex items-center justify-center rounded-2xl border border-white/[0.06] bg-white/[0.02] py-8 text-[12px] text-white/20 font-sans"
+      class="fund-holdings__empty-state"
     >
       暂无持仓数据
     </div>
 
     <div
       v-else
-      class="flex flex-col gap-3"
+      class="fund-holdings__content"
     >
-      <div class="grid grid-cols-3 gap-3">
+      <div class="fund-holdings__grid">
         <article
           v-for="item in holdings"
           :key="item.stockCode"
           data-test="fund-holding-item"
-          class="rounded-2xl border border-white/[0.06] bg-white/[0.02] px-3.5 py-3"
+          class="fund-holdings__card"
         >
-          <div class="flex items-start justify-between gap-3 mb-2">
-            <div class="min-w-0">
-              <div class="flex items-center gap-2 mb-1">
-                <span class="text-[10px] text-white/22 font-mono">
+          <div class="fund-holdings__card-header">
+            <div class="fund-holdings__card-meta">
+              <div class="fund-holdings__card-topline">
+                <span class="fund-holdings__rank">
                   {{ item.rank }}
                 </span>
                 <span
                   v-if="getMarketTag(item.marketCode)"
-                  class="text-[9px] text-white/24 font-mono px-1.5 py-px rounded-full bg-white/[0.04]"
+                  class="fund-holdings__market-tag"
                 >
                   {{ getMarketTag(item.marketCode) }}
                 </span>
               </div>
-              <div class="text-[12px] text-white/84 font-sans truncate">
+              <div class="fund-holdings__stock-name">
                 {{ item.stockName }}
               </div>
             </div>
 
-            <span class="text-[13px] text-white/70 font-mono shrink-0">
+            <span class="fund-holdings__ratio">
               {{ item.ratio.toFixed(2) }}%
             </span>
           </div>
 
-          <div class="h-1.5 rounded-full bg-white/[0.04] overflow-hidden">
+          <div class="fund-holdings__progress-track">
             <div
-              class="h-full rounded-full transition-all duration-500"
+              class="fund-holdings__progress-fill"
               :style="{
                 width: maxRatio > 0 ? `${(item.ratio / maxRatio) * 100}%` : '0%',
-                backgroundColor: 'var(--accent-primary)',
-                opacity: 0.72,
               }"
             />
           </div>
         </article>
       </div>
 
-      <div class="flex items-center justify-between border-t border-white/[0.05] pt-3">
-        <span class="text-[10px] text-white/25 font-sans tracking-wide">
+      <div class="fund-holdings__summary">
+        <span class="fund-holdings__summary-label">
           前{{ holdings.length }}合计占比
         </span>
-        <span class="text-[12px] text-white/58 font-mono">
+        <span class="fund-holdings__summary-value">
           {{ totalRatio.toFixed(2) }}%
         </span>
       </div>
     </div>
   </section>
 </template>
+
+<style scoped lang="scss" src="./FundHoldings.scss"></style>

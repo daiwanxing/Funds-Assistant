@@ -1,0 +1,182 @@
+.fund-detail {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  &__empty-state,
+  &__error-state {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding-bottom: 80px;
+  }
+
+  &__empty-icon-shell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    border: 1px solid var(--color-border-subtle);
+    border-radius: 16px;
+  }
+
+  &__empty-icon {
+    width: 24px;
+    height: 24px;
+    color: rgba(255, 255, 255, 0.2);
+  }
+
+  &__empty-copy {
+    text-align: center;
+  }
+
+  &__empty-title,
+  &__error-title {
+    margin: 0 0 6px;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  &__empty-description,
+  &__error-description {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.3);
+    font-size: 12px;
+  }
+
+  &__loading-state,
+  &__content {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  &__hero-skeleton {
+    border-bottom: 1px solid var(--color-border-subtle);
+  }
+
+  &__hero-skeleton-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 16px 20px;
+    animation: fund-detail-pulse 1.2s ease-in-out infinite;
+  }
+
+  &__hero-skeleton-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    &--align-end {
+      align-items: flex-end;
+    }
+  }
+
+  &__loading-body,
+  &__main {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-height: 0;
+    gap: 1px;
+  }
+
+  &__chart {
+    min-height: 0;
+  }
+
+  &__chart-skeleton {
+    padding: 20px;
+    animation: fund-detail-pulse 1.2s ease-in-out infinite;
+  }
+
+  &__rail-skeleton {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 1px;
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  &__rail-skeleton-item {
+    padding: 20px;
+    animation: fund-detail-pulse 1.2s ease-in-out infinite;
+  }
+
+  &__skeleton-block,
+  &__skeleton-chart {
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  &__skeleton-block {
+    &--headline {
+      width: 192px;
+      height: 20px;
+    }
+
+    &--subline {
+      width: 96px;
+      height: 14px;
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    &--value {
+      width: 80px;
+      height: 20px;
+    }
+
+    &--delta {
+      width: 64px;
+      height: 14px;
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    &--toolbar {
+      width: 112px;
+      height: 16px;
+      margin-bottom: 12px;
+    }
+
+    &--rail-label {
+      width: 64px;
+      height: 12px;
+      margin-bottom: 12px;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    &--rail-value {
+      width: 112px;
+      height: 24px;
+      margin-bottom: 8px;
+    }
+
+    &--rail-hint {
+      width: 80px;
+      height: 12px;
+      background: rgba(255, 255, 255, 0.04);
+    }
+  }
+
+  &__skeleton-chart {
+    height: 520px;
+    background: rgba(255, 255, 255, 0.04);
+  }
+}
+
+@keyframes fund-detail-pulse {
+  0%,
+  100% {
+    opacity: 0.72;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}

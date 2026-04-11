@@ -1,0 +1,71 @@
+@use "@/styles/mixins" as *;
+
+.ticker-card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-width: 160px;
+  height: 100%;
+  padding: 0 20px;
+  cursor: default;
+  transition: color 150ms ease;
+
+  &__sparkline {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    margin-top: 4px;
+    margin-right: 12px;
+  }
+
+  &__sparkline-canvas {
+    overflow: visible;
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 76px;
+  }
+
+  &__label-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 2px;
+  }
+
+  &__label {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+  }
+
+  &__value-row {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+  }
+
+  &__price {
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+
+  &__change {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 500;
+
+    &--rise {
+      @include status-text(var(--color-rise-primary));
+    }
+
+    &--fall {
+      @include status-text(var(--color-fall-primary));
+    }
+  }
+}

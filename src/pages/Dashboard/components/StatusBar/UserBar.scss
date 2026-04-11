@@ -1,0 +1,336 @@
+@use "@/styles/mixins" as *;
+
+.user-bar {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  color: rgba(255, 255, 255, 0.6);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  user-select: none;
+
+  &--guest {
+    padding: 0;
+  }
+
+  &--account {
+    padding: 0 16px;
+  }
+
+  &__account {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    height: 100%;
+  }
+
+  &__identity {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+  }
+
+  &__avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    overflow: hidden;
+    border: 1px solid var(--color-border-subtle);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  &__avatar-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  &__avatar-fallback {
+    color: rgba(255, 255, 255, 0.5);
+    font-family: var(--font-sans);
+    font-size: 12px;
+  }
+
+  &__profile {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 80px;
+  }
+
+  &__name {
+    @include truncate;
+    color: rgba(255, 255, 255, 0.9);
+    font-family: var(--font-sans);
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    line-height: 1.2;
+  }
+
+  &__meta {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 2px;
+    color: rgba(255, 255, 255, 0.4);
+    font-family: var(--font-sans);
+    font-size: 11px;
+    line-height: 1.2;
+  }
+
+  &__meta-value {
+    color: rgba(255, 255, 255, 0.3);
+    font-family: var(--font-mono);
+    letter-spacing: 0.08em;
+  }
+
+  &__menu-trigger {
+    @include button-reset;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    color: rgba(255, 255, 255, 0.4);
+    cursor: pointer;
+    transition: color 150ms ease, background-color 150ms ease;
+
+    &:hover {
+      color: rgba(255, 255, 255, 0.9);
+      background: rgba(255, 255, 255, 0.1);
+    }
+  }
+
+  &__menu-icon {
+    width: 16px;
+    height: 16px;
+  }
+
+  &__guest-button {
+    @include button-reset;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    height: 100%;
+    padding: 0 16px;
+    overflow: hidden;
+    cursor: pointer;
+  }
+
+  &__guest-flow,
+  &__guest-glow,
+  &__guest-line {
+    position: absolute;
+    pointer-events: none;
+  }
+
+  &__guest-flow {
+    inset: 0;
+    background: linear-gradient(-60deg, #0d1326, #1b284c, #111a30, #0d1326);
+    background-size: 300% 300%;
+    animation: user-bar-gradient-flow 12s ease-in-out infinite;
+  }
+
+  &__guest-glow {
+    top: 50%;
+    left: -16px;
+    width: 90px;
+    height: 70px;
+    border-radius: 999px;
+    background: var(--color-brand-soft-fill);
+    filter: blur(20px);
+    mix-blend-mode: screen;
+    transform: translateY(-50%);
+    animation: user-bar-breathe 6s ease-in-out infinite;
+  }
+
+  &__guest-line {
+    top: 0;
+    left: 0;
+    width: 65%;
+    height: 1px;
+    background: linear-gradient(to right, rgba(47, 129, 247, 0.3), transparent);
+  }
+
+  &__guest-copy,
+  &__guest-action {
+    position: relative;
+    z-index: 1;
+  }
+
+  &__guest-copy {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  &__guest-logo {
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  &__guest-text {
+    color: rgba(255, 255, 255, 0.6);
+    font-family: var(--font-sans);
+    font-size: 13px;
+    letter-spacing: 0.04em;
+  }
+
+  &__guest-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-sans);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    transition: color 160ms ease, opacity 160ms ease;
+
+    &--text {
+      color: rgba(255, 255, 255, 0.92);
+    }
+
+    .user-bar__guest-button:hover &--text {
+      color: #fff;
+      opacity: 1;
+    }
+  }
+
+  &__logout-dialog {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 320px;
+    padding: 32px;
+    background: #000;
+  }
+
+  &__logout-brand {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 24px;
+  }
+
+  &__logout-logo {
+    color: #fff;
+  }
+
+  &__logout-title {
+    margin: 0 0 8px;
+    color: #fff;
+    font-family: var(--font-sans);
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-align: center;
+  }
+
+  &__logout-description {
+    margin: 0 0 24px;
+    color: rgba(255, 255, 255, 0.5);
+    font-family: var(--font-sans);
+    font-size: 14px;
+    line-height: 1.6;
+    text-align: center;
+  }
+
+  &__logout-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+  }
+
+  &__logout-button {
+    @include button-reset;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 40px;
+    border-radius: 8px;
+    font-family: var(--font-sans);
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    transition: background-color 180ms ease, opacity 180ms ease;
+
+    &:disabled {
+      cursor: not-allowed;
+    }
+
+    &--primary {
+      background: #fff;
+      color: var(--color-surface-canvas);
+
+      &:hover:not(:disabled) {
+        background: rgba(255, 255, 255, 0.9);
+      }
+
+      &:disabled {
+        opacity: 0.6;
+      }
+    }
+
+    &--secondary {
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+
+      &:hover:not(:disabled) {
+        background: rgba(255, 255, 255, 0.2);
+      }
+
+      &:disabled {
+        opacity: 0.3;
+      }
+    }
+  }
+
+  &__logout-spinner {
+    animation: user-bar-spin 1s linear infinite;
+  }
+}
+
+@keyframes user-bar-gradient-flow {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes user-bar-breathe {
+  0%,
+  100% {
+    transform: translateY(-50%) scale(1);
+    opacity: 0.6;
+  }
+
+  50% {
+    transform: translateY(-50%) scale(1.15);
+    opacity: 0.85;
+  }
+}
+
+@keyframes user-bar-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

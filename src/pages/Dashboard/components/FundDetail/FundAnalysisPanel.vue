@@ -53,37 +53,41 @@ const holdingChange = (holding: FundHoldingItem) => {
 
 <template>
   <section
-    class="bg-[var(--bg-1)] border-t border-white/[0.04] h-[460px] overflow-hidden flex flex-col"
+    class="fund-analysis-panel"
     data-test="fund-detail-bottom"
   >
-    <div class="px-5 pt-4">
-      <div class="flex items-center gap-5 border-b border-white/[0.05]">
+    <div class="fund-analysis-panel__tabs">
+      <div class="fund-analysis-panel__tab-list">
         <button
-          class="relative flex items-center gap-2 pb-3 text-[13px] font-medium transition-colors"
-          :class="activeTab === 'holdings' ? 'text-white/92' : 'text-white/30 hover:text-white/52'"
+          :class="[
+            'fund-analysis-panel__tab-button',
+            { 'fund-analysis-panel__tab-button--active': activeTab === 'holdings' },
+          ]"
           @click="activeTab = 'holdings'"
         >
-          <Layers3 class="w-4 h-4" />
+          <Layers3 class="fund-analysis-panel__tab-icon" />
           <span>持仓明细</span>
           <span
             v-if="activeTab === 'holdings'"
-            class="absolute inset-x-0 bottom-0 h-0.5 rounded-full bg-[var(--accent-primary)]"
+            class="fund-analysis-panel__tab-indicator"
           />
         </button>
 
         <button
-          class="relative flex items-center gap-2 pb-3 text-[13px] font-medium transition-colors"
-          :class="activeTab === 'ai' ? 'text-white/92' : 'text-white/30 hover:text-white/52'"
+          :class="[
+            'fund-analysis-panel__tab-button',
+            { 'fund-analysis-panel__tab-button--active': activeTab === 'ai' },
+          ]"
           @click="activeTab = 'ai'"
         >
-          <Bot class="w-4 h-4" />
+          <Bot class="fund-analysis-panel__tab-icon" />
           <span>AI 分析</span>
-          <span class="rounded bg-[rgba(245,166,35,0.18)] px-1.5 py-[1px] text-[10px] text-[#f5a623] font-semibold">
+          <span class="fund-analysis-panel__beta-badge">
             BETA
           </span>
           <span
             v-if="activeTab === 'ai'"
-            class="absolute inset-x-0 bottom-0 h-0.5 rounded-full bg-[var(--accent-primary)]"
+            class="fund-analysis-panel__tab-indicator"
           />
         </button>
       </div>
@@ -91,75 +95,79 @@ const holdingChange = (holding: FundHoldingItem) => {
 
     <div
       v-if="activeTab === 'holdings'"
-      class="flex-1 min-h-0 px-5 py-4 flex flex-col gap-4"
+      class="fund-analysis-panel__holdings-view"
     >
-      <div class="flex items-end justify-between gap-5">
-        <div>
-          <div class="text-[24px] text-white/92 font-semibold font-sans">
+      <div class="fund-analysis-panel__hero">
+        <div class="fund-analysis-panel__hero-copy">
+          <div class="fund-analysis-panel__hero-title">
             持仓明细
           </div>
-          <div class="mt-1 text-[12px] text-white/30 font-sans">
+          <div class="fund-analysis-panel__hero-subtitle">
             {{ holdingsMeta }}
           </div>
         </div>
 
-        <div class="text-[11px] text-white/24 font-sans">
+        <div class="fund-analysis-panel__hero-note">
           以前三大重仓为核心，4-10 名压成高密度列表
         </div>
       </div>
 
       <div
         v-if="leaderHoldings.length === 0"
-        class="flex-1 min-h-0 flex items-center justify-center rounded-[18px] border border-white/[0.05] bg-[rgba(255,255,255,0.015)] px-6 text-center"
+        class="fund-analysis-panel__empty-state"
       >
         <div>
-          <div class="text-[13px] text-white/64 font-medium mb-2">
+          <div class="fund-analysis-panel__empty-title">
             该基金暂无股票重仓披露
           </div>
-          <p class="text-[12px] text-white/30 leading-6">
+          <p class="fund-analysis-panel__empty-description">
             当前基金档案未返回前十大股票持仓，可能是基金类型不适用，或最近季度尚未披露相关数据。
           </p>
         </div>
       </div>
 
       <template v-else>
-        <div class="grid grid-cols-3 gap-3">
+        <div class="fund-analysis-panel__leader-grid">
           <article
             v-for="item in leaderHoldings"
             :key="item.stockCode"
             data-test="holding-leader-card"
-            class="overflow-hidden rounded-[20px] border border-white/[0.05] bg-[linear-gradient(180deg,rgba(255,255,255,0.035),rgba(255,255,255,0.015))] px-4 py-4"
+            class="fund-analysis-panel__leader-card"
           >
-            <div class="text-[28px] leading-none font-mono font-semibold text-white/16">
+            <div class="fund-analysis-panel__leader-rank">
               {{ String(item.rank).padStart(2, "0") }}
             </div>
 
-            <div class="mt-3 flex items-center gap-2 text-[11px] text-white/28 font-mono">
+            <div class="fund-analysis-panel__leader-code">
               <span>{{ item.stockCode }}</span>
-              <span class="rounded-full bg-white/[0.04] px-1.5 py-px text-[9px] text-white/34">
+              <span class="fund-analysis-panel__market-tag">
                 {{ marketTag(item.marketCode) }}
               </span>
             </div>
 
-            <div class="mt-3 text-[24px] text-white/90 font-semibold truncate">
+            <div class="fund-analysis-panel__leader-name">
               {{ item.stockName }}
             </div>
 
-            <div class="mt-5 text-[44px] leading-none font-mono font-semibold text-white/92">
+            <div class="fund-analysis-panel__leader-ratio">
               {{ item.ratio.toFixed(2) }}
-              <span class="text-[16px] text-white/34">%</span>
+              <span class="fund-analysis-panel__leader-ratio-unit">%</span>
             </div>
 
-            <div class="mt-4 h-[6px] rounded-full bg-white/[0.06] overflow-hidden">
+            <div class="fund-analysis-panel__leader-bar">
               <div
-                class="h-full rounded-full bg-[linear-gradient(90deg,#2f81f7,#64a1ff)]"
+                class="fund-analysis-panel__leader-bar-fill"
                 :style="{ width: `${Math.min(item.ratio * 7.6, 100)}%` }"
               />
             </div>
 
             <div
-              class="mt-4 text-[20px] font-mono font-semibold"
-              :class="holdingChange(item) >= 0 ? 'text-up' : 'text-down'"
+              :class="[
+                'fund-analysis-panel__leader-change',
+                holdingChange(item) >= 0
+                  ? 'fund-analysis-panel__leader-change--rise'
+                  : 'fund-analysis-panel__leader-change--fall',
+              ]"
             >
               {{ holdingChange(item) >= 0 ? "+" : "" }}{{ holdingChange(item).toFixed(2) }}%
             </div>
@@ -168,41 +176,45 @@ const holdingChange = (holding: FundHoldingItem) => {
 
         <div
           v-if="listHoldings.length > 0"
-          class="flex-1 min-h-0 overflow-y-auto border-t border-white/[0.04]"
+          class="fund-analysis-panel__list"
         >
           <article
             v-for="item in listHoldings"
             :key="item.stockCode"
             data-test="holding-row"
-            class="grid grid-cols-[52px_minmax(0,1.35fr)_1fr_88px_88px] items-center gap-4 border-b border-white/[0.04] py-3 last:border-b-0"
+            class="fund-analysis-panel__list-row"
           >
-            <div class="text-[18px] text-white/18 font-mono font-semibold">
+            <div class="fund-analysis-panel__list-rank">
               {{ String(item.rank).padStart(2, "0") }}
             </div>
 
-            <div class="min-w-0">
-              <div class="text-[18px] text-white/88 font-semibold truncate">
+            <div class="fund-analysis-panel__list-meta">
+              <div class="fund-analysis-panel__list-name">
                 {{ item.stockName }}
               </div>
-              <div class="mt-1 text-[11px] text-white/28 font-mono">
+              <div class="fund-analysis-panel__list-code">
                 {{ item.stockCode }} · {{ marketTag(item.marketCode) }}
               </div>
             </div>
 
-            <div class="h-[8px] rounded-full bg-white/[0.05] overflow-hidden">
+            <div class="fund-analysis-panel__list-bar">
               <div
-                class="h-full rounded-full bg-[linear-gradient(90deg,#2f81f7,#64a1ff)]"
+                class="fund-analysis-panel__list-bar-fill"
                 :style="{ width: `${Math.min(item.ratio * 7.6, 100)}%` }"
               />
             </div>
 
-            <div class="text-right text-[18px] text-white/72 font-mono">
+            <div class="fund-analysis-panel__list-ratio">
               {{ item.ratio.toFixed(2) }}%
             </div>
 
             <div
-              class="text-right text-[16px] font-mono font-semibold"
-              :class="holdingChange(item) >= 0 ? 'text-up' : 'text-down'"
+              :class="[
+                'fund-analysis-panel__list-change',
+                holdingChange(item) >= 0
+                  ? 'fund-analysis-panel__list-change--rise'
+                  : 'fund-analysis-panel__list-change--fall',
+              ]"
             >
               {{ holdingChange(item) >= 0 ? "+" : "" }}{{ holdingChange(item).toFixed(2) }}%
             </div>
@@ -212,15 +224,15 @@ const holdingChange = (holding: FundHoldingItem) => {
 
       <div
         data-test="industry-status"
-        class="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-4 border-t border-white/[0.04] pt-3 text-[12px] font-sans"
+        class="fund-analysis-panel__industry-status"
       >
-        <div class="text-[#ffb23f] font-medium">
+        <div class="fund-analysis-panel__industry-label">
           {{ industryStatusLabel }}
         </div>
-        <div class="truncate text-white/38">
+        <div class="fund-analysis-panel__industry-text">
           {{ industryStatusText }}
         </div>
-        <div class="text-white/24">
+        <div class="fund-analysis-panel__industry-quarter">
           {{ industryQuarter || (quarter ? `持仓数据：${quarter}` : "持仓数据待补充") }}
         </div>
       </div>
@@ -228,16 +240,18 @@ const holdingChange = (holding: FundHoldingItem) => {
 
     <div
       v-else
-      class="px-5 py-4 flex-1 min-h-0"
+      class="fund-analysis-panel__ai-view"
     >
-      <div class="rounded-2xl border border-white/[0.06] bg-white/[0.02] px-5 py-6 h-full">
-        <div class="text-[13px] text-white/78 font-medium mb-2">
+      <div class="fund-analysis-panel__ai-placeholder">
+        <div class="fund-analysis-panel__ai-title">
           AI 分析占位
         </div>
-        <p class="text-[12px] text-white/36 leading-6 max-w-[480px]">
+        <p class="fund-analysis-panel__ai-description">
           这里将承接 AI 对基金走势、持仓构成和风险点的解读。当前先保留与截图一致的 tab 结构和占位层级。
         </p>
       </div>
     </div>
   </section>
 </template>
+
+<style scoped lang="scss" src="./FundAnalysisPanel.scss"></style>

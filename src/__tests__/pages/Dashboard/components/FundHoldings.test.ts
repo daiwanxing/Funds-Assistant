@@ -56,6 +56,8 @@ describe("FundHoldings", () => {
     });
 
     expect(wrapper.find("[data-test='fund-holdings-strip']").exists()).toBe(true);
+    expect(wrapper.find(".fund-holdings").exists()).toBe(true);
+    expect(wrapper.find(".fund-holdings__grid").exists()).toBe(true);
     expect(wrapper.findAll("[data-test='fund-holding-item']")).toHaveLength(3);
     expect(wrapper.text()).toContain("2025年4季度");
     expect(wrapper.text()).toContain("前3合计占比");

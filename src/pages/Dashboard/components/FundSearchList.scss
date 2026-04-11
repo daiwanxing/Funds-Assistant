@@ -1,0 +1,253 @@
+@use "@/styles/mixins" as *;
+
+.search-fund-list {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  background: var(--color-surface-canvas);
+
+  &__summary {
+    display: flex;
+    align-items: center;
+    height: 30px;
+    flex-shrink: 0;
+    overflow: hidden;
+    padding: 0 16px;
+    border-top: 1px solid var(--color-border-subtle);
+    border-bottom: 1px solid var(--color-border-subtle);
+  }
+
+  &__summary-text {
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 11px;
+  }
+
+  &__summary-count {
+    padding-inline: 4px;
+    color: var(--color-text-primary);
+  }
+
+  &__body {
+    position: relative;
+    flex: 1;
+    overflow-y: auto;
+  }
+
+  &__loading-state {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: -40px;
+  }
+
+  &__loading-visual {
+    overflow: visible;
+  }
+
+  &__loading-track {
+    color: rgba(255, 255, 255, 0.04);
+  }
+
+  &__loading-line {
+    color: rgba(47, 129, 247, 0.6);
+  }
+
+  &__loading-copy {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    margin-top: 32px;
+  }
+
+  &__loading-title {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+  }
+
+  &__loading-description {
+    color: rgba(255, 255, 255, 0.3);
+    font-size: 11px;
+    letter-spacing: 0.04em;
+  }
+
+  &__list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  &__row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--color-border-subtle);
+    transition: background-color 150ms ease;
+
+    &:hover {
+      background: var(--color-surface-muted);
+    }
+  }
+
+  &__identity {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-width: 0;
+    padding-right: 8px;
+  }
+
+  &__headline {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    margin-bottom: 6px;
+  }
+
+  &__name {
+    @include truncate;
+    display: block;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  &__tag {
+    flex-shrink: 0;
+    padding: 1px 6px;
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    border-radius: 4px;
+    background: rgba(26, 43, 74, 1);
+    color: #60a5fa;
+    font-size: 10px;
+    line-height: 1.2;
+  }
+
+  &__description {
+    @include truncate;
+    display: block;
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 11px;
+    letter-spacing: -0.01em;
+  }
+
+  &__metrics {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+
+  &__quote {
+    width: 44px;
+    padding-top: 2px;
+    color: rgba(255, 255, 255, 0.8);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    text-align: right;
+  }
+
+  &__action-column {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+    width: 80px;
+  }
+
+  &__change-badge {
+    width: fit-content;
+    padding: 0 6px;
+    border-radius: 4px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 600;
+
+    &--rise {
+      @include status-text(var(--color-rise-primary));
+      background: var(--color-rise-soft-bg);
+    }
+
+    &--fall {
+      @include status-text(var(--color-fall-primary));
+      background: var(--color-fall-soft-bg);
+    }
+  }
+
+  &__change-placeholder {
+    padding-inline: 6px;
+    color: rgba(255, 255, 255, 0.3);
+    font-family: var(--font-mono);
+    font-size: 12px;
+  }
+
+  &__action-button {
+    @include button-reset;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    width: 64px;
+    padding: 4px 0;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    font-size: 11px;
+    cursor: pointer;
+    transition: border-color 150ms ease, background-color 150ms ease, color 150ms ease;
+
+    &--added {
+      border-color: rgba(16, 185, 129, 0.3);
+      color: #10b981;
+      cursor: default;
+    }
+
+    &--add {
+      border-color: rgba(47, 129, 247, 0.4);
+      color: var(--color-brand-primary);
+
+      &:hover {
+        border-color: var(--color-brand-primary);
+        background: var(--color-brand-soft-bg);
+      }
+    }
+  }
+
+  &__action-icon {
+    width: 12px;
+    height: 12px;
+  }
+
+  &__empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 64px;
+    opacity: 0.3;
+  }
+
+  &__empty-icon {
+    width: 32px;
+    height: 32px;
+    margin-bottom: 16px;
+    color: var(--color-text-primary);
+  }
+
+  &__empty-text {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 12px;
+  }
+
+  :deep(.search-fund-list__match) {
+    color: var(--color-brand-primary);
+  }
+}

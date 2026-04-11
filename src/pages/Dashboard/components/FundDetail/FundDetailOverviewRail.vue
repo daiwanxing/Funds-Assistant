@@ -44,27 +44,34 @@ const overviewItems = computed(() => [
 
 <template>
   <section
+    class="fund-overview-rail"
     data-test="fund-detail-overview-rail"
   >
-    <div class="grid grid-cols-[repeat(3,minmax(0,1fr))_1.4fr_minmax(0,1fr)]">
+    <div class="fund-overview-rail__grid">
       <article
         v-for="item in overviewItems"
         :key="item.label"
-        class="min-w-0 border-r border-white/[0.05] px-5 py-4 last:border-r-0"
+        class="fund-overview-rail__item"
       >
-        <div class="text-[10px] uppercase tracking-[0.18em] text-white/24 font-sans">
+        <div class="fund-overview-rail__label">
           {{ item.label }}
         </div>
         <div
-          class="mt-2 text-white/92 font-semibold leading-[1.35] break-words"
-          :class="item.wide ? 'text-[16px]' : 'text-[18px]'"
+          :class="[
+            'fund-overview-rail__value',
+            {
+              'fund-overview-rail__value--wide': item.wide,
+            },
+          ]"
         >
           {{ item.value }}
         </div>
-        <div class="mt-2 text-[12px] text-white/34 font-sans">
+        <div class="fund-overview-rail__hint">
           {{ item.hint }}
         </div>
       </article>
     </div>
   </section>
 </template>
+
+<style scoped lang="scss" src="./FundDetailOverviewRail.scss"></style>

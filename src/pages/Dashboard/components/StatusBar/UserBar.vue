@@ -31,33 +31,38 @@ const confirmLogout = async () => {
 </script>
 
 <template>
-  <div class="personal-info-content h-full w-full flex items-center px-4 text-xs font-mono select-none text-white/60">
+  <div
+    :class="[
+      'user-bar',
+      auth.isAuthenticated ? 'user-bar--account' : 'user-bar--guest',
+    ]"
+  >
     <div
       v-if="auth.isAuthenticated"
-      class="w-full h-full flex items-center justify-between"
+      class="user-bar__account"
     >
-      <div class="flex items-center gap-2.5">
-        <div class="w-8 h-8 rounded-full overflow-hidden bg-white/10 shrink-0 border border-white/5">
+      <div class="user-bar__identity">
+        <div class="user-bar__avatar">
           <img
             v-if="auth.avatarUrl"
             :src="auth.avatarUrl"
-            class="w-full h-full object-cover"
+            class="user-bar__avatar-image"
             alt="avatar"
           >
           <div
             v-else
-            class="w-full h-full flex items-center justify-center text-white/50 text-xs font-sans"
+            class="user-bar__avatar-fallback"
           >
             {{ (auth.nickname || auth.email || 'U').charAt(0).toUpperCase() }}
           </div>
         </div>
 
-        <div class="flex flex-col justify-center min-w-[80px]">
-          <span class="text-[13px] font-medium text-white/90 truncate leading-tight font-sans tracking-wide">
+        <div class="user-bar__profile">
+          <span class="user-bar__name">
             {{ auth.nickname || 'wanxing dai' }}
           </span>
-          <span class="text-[11px] text-white/40 leading-tight font-sans mt-0.5 flex items-center gap-1">
-            <span class="font-mono text-white/30 tracking-wider">¥0</span>
+          <span class="user-bar__meta">
+            <span class="user-bar__meta-value">¥0</span>
           </span>
         </div>
       </div>
@@ -67,8 +72,8 @@ const confirmLogout = async () => {
         trigger="click"
       >
         <template #trigger>
-          <button class="w-6 h-6 flex items-center justify-center text-white/40 hover:text-white/90 hover:bg-white/10 rounded transition-colors cursor-pointer">
-            <Ellipsis class="w-4 h-4" />
+          <button class="user-bar__menu-trigger">
+            <Ellipsis class="user-bar__menu-icon" />
           </button>
         </template>
 
@@ -88,29 +93,25 @@ const confirmLogout = async () => {
 
     <button
       v-else
-      class="w-full h-full flex items-center justify-between relative cursor-pointer border-none overflow-hidden"
+      class="user-bar__guest-button"
       @click="emit('login')"
     >
       <div
-        class="absolute inset-0 pointer-events-none gradient-flow-bg"
+        class="user-bar__guest-flow"
         style="mask-image: linear-gradient(to right, black 40%, transparent 100%); -webkit-mask-image: linear-gradient(to right, black 40%, transparent 100%);"
       />
 
-      <div class="absolute -left-4 top-1/2 -translate-y-1/2 w-[90px] h-[70px] bg-accent-primary/20 blur-[20px] rounded-full pointer-events-none mix-blend-screen animate-breathe" />
-
-      <div class="absolute top-0 left-0 w-[65%] h-[1px] bg-gradient-to-r from-accent-primary/30 to-transparent pointer-events-none" />
-
-      <div class="flex items-center gap-3 relative z-10">
+      <div class="user-bar__guest-glow" />
+      <div class="user-bar__guest-line" />
+      <div class="user-bar__guest-copy">
         <BrandLogo
           :size="24"
-          class="text-white/90"
+          class="user-bar__guest-logo"
         />
-        <span class="text-[13px] font-sans text-white/60 tracking-wide mt-[1px]">登录解锁全部功能</span>
+        <span class="user-bar__guest-text">登录解锁全部功能</span>
       </div>
 
-      <div
-        class="min-w-[56px] h-[28px] flex items-center justify-center rounded-md bg-accent-primary text-white text-[12px] font-medium relative z-10 font-sans tracking-wide"
-      >
+      <div class="user-bar__guest-action user-bar__guest-action--text">
         登录
       </div>
     </button>
@@ -122,38 +123,37 @@ const confirmLogout = async () => {
     size="auto"
     panel-class="!bg-black !border !border-white/10 overflow-hidden"
   >
-    <div class="w-[320px] bg-black flex flex-col items-center px-8 py-8">
-      <div class="mb-6 flex items-center justify-center">
+    <div class="user-bar__logout-dialog">
+      <div class="user-bar__logout-brand">
         <BrandLogo
           :size="40"
-          class="text-white"
+          class="user-bar__logout-logo"
         />
       </div>
 
-      <h2 class="text-[17px] font-bold text-white mb-2 text-center tracking-wide font-sans">
+      <h2 class="user-bar__logout-title">
         登出当前账号？
       </h2>
 
-      <p class="text-[14px] text-white/50 text-center mb-6 leading-relaxed font-sans mt-0">
+      <p class="user-bar__logout-description">
         退出后将丢失数据云端同步
       </p>
 
-      <div class="w-full flex flex-col gap-5">
+      <div class="user-bar__logout-actions">
         <button
-          class="w-full h-10 border-none rounded-lg bg-white text-[#0a0b0d] font-sans text-sm font-600 cursor-pointer tracking-wide transition-[background,opacity] duration-[180ms] hover:bg-white/90 flex items-center justify-center disabled:opacity-60 disabled:cursor-not-allowed"
+          class="user-bar__logout-button user-bar__logout-button--primary"
           :disabled="isLoggingOut"
           @click="confirmLogout"
         >
           <LoaderCircle
             v-if="isLoggingOut"
             :size="18"
-            class="animate-spin"
+            class="user-bar__logout-spinner"
           />
           <span v-else>登出</span>
         </button>
         <button
-          class="w-full h-10 border-none rounded-lg bg-white/10 text-white font-sans text-sm font-600 tracking-wide transition-[background,opacity] duration-[180ms] flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed"
-          :class="isLoggingOut ? '' : 'cursor-pointer hover:bg-white/20'"
+          class="user-bar__logout-button user-bar__logout-button--secondary"
           :disabled="isLoggingOut"
           @click="showLogoutDialog = false"
         >
@@ -164,32 +164,4 @@ const confirmLogout = async () => {
   </Dialog>
 </template>
 
-<style scoped>
-.guest-banner {
-  padding: 0;
-  border: none;
-  background: transparent;
-  outline: none;
-}
-
-@keyframes gradient-flow {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-.gradient-flow-bg {
-  background: linear-gradient(-60deg, #0d1326, #1b284c, #111a30, #0d1326);
-  background-size: 300% 300%;
-  animation: gradient-flow 12s ease-in-out infinite;
-}
-
-@keyframes breathe {
-  0%, 100% { transform: translateY(-50%) scale(1); opacity: 0.6; }
-  50% { transform: translateY(-50%) scale(1.15); opacity: 0.85; }
-}
-
-.animate-breathe {
-  animation: breathe 6s ease-in-out infinite;
-}
-</style>
+<style scoped lang="scss" src="./UserBar.scss"></style>

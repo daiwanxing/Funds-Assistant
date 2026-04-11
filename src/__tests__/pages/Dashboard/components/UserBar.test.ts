@@ -32,5 +32,22 @@ describe("UserBar", () => {
     });
 
     expect(wrapper.text()).toContain("登录解锁全部功能");
+    expect(wrapper.find(".user-bar__guest-action--text").exists()).toBe(true);
+  });
+
+  it("marks guest mode on the root element so full-bleed styling can bypass account padding", async () => {
+    setActivePinia(createPinia());
+    const wrapper = mount(UserBar, {
+      global: {
+        stubs: {
+          Dialog: { template: "<div />" },
+          Dropdown: { template: "<div />" },
+          DropdownItem: { template: "<div />" },
+          BrandLogo: { template: "<div />" },
+        },
+      },
+    });
+
+    expect(wrapper.get(".user-bar").classes()).toContain("user-bar--guest");
   });
 });

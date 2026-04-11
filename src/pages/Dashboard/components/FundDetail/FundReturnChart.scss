@@ -1,0 +1,53 @@
+@use "@/styles/mixins" as *;
+
+.fund-return-chart {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
+  padding: 20px;
+
+  &__toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 16px;
+    flex-shrink: 0;
+  }
+
+  &__periods {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  &__period-button {
+    @include button-reset;
+    padding: 7px 10px;
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    border-radius: 12px;
+    color: rgba(255, 255, 255, 0.32);
+    font-size: 10px;
+    line-height: 1;
+    cursor: pointer;
+    transition: color 150ms ease, background-color 150ms ease, border-color 150ms ease;
+
+    &:hover {
+      color: rgba(255, 255, 255, 0.52);
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    &--active {
+      border-color: rgba(75, 146, 255, 0.34);
+      background: rgba(47, 129, 247, 0.16);
+      color: rgba(255, 255, 255, 0.92);
+    }
+  }
+
+  &__canvas {
+    flex: 1;
+    min-height: 420px;
+  }
+}

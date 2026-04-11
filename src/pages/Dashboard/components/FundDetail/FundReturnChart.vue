@@ -123,16 +123,18 @@ watch(() => [props.data, props.isRising, props.period], updateChart, { deep: tru
 </script>
 
 <template>
-  <div class="px-5 py-5 overflow-hidden flex flex-col min-h-0 h-full">
-    <div class="flex items-center justify-between gap-6 mb-4 shrink-0">
-      <div class="flex flex-wrap gap-2">
+  <div class="fund-return-chart">
+    <div class="fund-return-chart__toolbar">
+      <div class="fund-return-chart__periods">
         <button
           v-for="p in PERIODS"
           :key="p.key"
-          class="px-2.5 py-[7px] text-[10px] leading-none font-sans rounded-[12px] transition-colors cursor-pointer border"
-          :class="period === p.key
-            ? 'bg-[rgba(47,129,247,0.16)] text-white/92 border-[rgba(75,146,255,0.34)]'
-            : 'text-white/32 border-white/[0.04] hover:text-white/52 hover:bg-white/[0.03]'"
+          :class="[
+            'fund-return-chart__period-button',
+            {
+              'fund-return-chart__period-button--active': period === p.key,
+            },
+          ]"
           @click="emit('update:period', p.key)"
         >
           {{ p.label }}
@@ -142,7 +144,9 @@ watch(() => [props.data, props.isRising, props.period], updateChart, { deep: tru
 
     <div
       ref="chartRef"
-      class="flex-1 min-h-[420px]"
+      class="fund-return-chart__canvas"
     />
   </div>
 </template>
+
+<style scoped lang="scss" src="./FundReturnChart.scss"></style>

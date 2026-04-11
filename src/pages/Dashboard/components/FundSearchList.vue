@@ -22,7 +22,7 @@ const highlightText = (text: string, query: string) => {
   if (!query || !text) return text;
   const safeQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   const regex = new RegExp(`(${safeQuery})`, 'gi');
-  return text.replace(regex, '<span class="text-[#3B82F6]">$1</span>');
+  return text.replace(regex, '<span class="search-fund-list__match">$1</span>');
 };
 
 const handleAdd = (code: string) => {
@@ -33,25 +33,24 @@ const handleAdd = (code: string) => {
 </script>
 
 <template>
-  <div class="flex-1 flex flex-col h-full overflow-hidden bg-[var(--bg-0)]">
+  <div class="search-fund-list">
     <div
       v-if="!loading && options && options.length > 0"
-      class="px-4 border-y border-white/5 shrink-0 h-[30px] flex items-center box-border overflow-hidden"
+      class="search-fund-list__summary"
     >
-      <div class="flex text-white/40 text-[11px] font-sans">
-        找到 <span class="text-white px-1">{{ options.length }}</span> 个匹配结果 · 点击 + 添加至自选
+      <div class="search-fund-list__summary-text">
+        找到 <span class="search-fund-list__summary-count">{{ options.length }}</span> 个匹配结果 · 点击 + 添加至自选
       </div>
     </div>
 
-
-    <div class="flex-1 overflow-y-auto relative">
+    <div class="search-fund-list__body">
       <template v-if="loading">
-        <div class="absolute inset-0 flex flex-col items-center justify-center -mt-10">
+        <div class="search-fund-list__loading-state">
           <svg
             width="240"
             height="80"
             viewBox="0 0 240 80"
-            class="overflow-visible"
+            class="search-fund-list__loading-visual"
           >
             <defs>
               <filter
@@ -116,7 +115,7 @@ const handleAdd = (code: string) => {
             <path
               d="M 0 60 C 15 45 25 65 40 55 C 55 45 65 30 80 40 C 95 50 110 65 130 45 C 150 25 165 15 185 25 C 205 35 220 10 240 15" 
               fill="none"
-              class="text-white/[0.04]"
+              class="search-fund-list__loading-track"
               stroke="currentColor"
               stroke-width="2"
               stroke-linecap="round"
@@ -128,7 +127,7 @@ const handleAdd = (code: string) => {
               id="searchLineDataPath"
               d="M 0 60 C 15 45 25 65 40 55 C 55 45 65 30 80 40 C 95 50 110 65 130 45 C 150 25 165 15 185 25 C 205 35 220 10 240 15" 
               fill="none"
-              class="text-[#3B82F6]/60"
+              class="search-fund-list__loading-line"
               stroke="currentColor"
               stroke-width="2"
               stroke-linecap="round"
@@ -205,70 +204,72 @@ const handleAdd = (code: string) => {
               </animateMotion>
             </circle>
           </svg>
-          
-          <div class="mt-8 flex flex-col items-center justify-center gap-[6px] font-sans">
-            <span class="text-white/70 text-[13px] tracking-wide font-medium">正在检索基金数据库</span>
-            <span class="text-white/30 text-[11px] tracking-wide">共收录 10,000+ 只基金 · 实时行情数据</span>
+
+          <div class="search-fund-list__loading-copy">
+            <span class="search-fund-list__loading-title">正在检索基金数据库</span>
+            <span class="search-fund-list__loading-description">共收录 10,000+ 只基金 · 实时行情数据</span>
           </div>
         </div>
       </template>
-      
+
       <template v-else-if="options.length > 0">
-        <ul class="font-sans">
+        <ul class="search-fund-list__list">
           <li
             v-for="item in options"
             :key="item.value"
-            class="px-4 py-3.5 flex items-start gap-[20px] justify-between border-b border-white/5 hover:bg-white/[0.02] transition-colors"
+            class="search-fund-list__row"
           >
-            <div class="flex flex-col overflow-hidden pr-2 flex-1">
-              <div class="flex items-center gap-2 overflow-hidden mb-1.5">
-                <span class="text-white/90 text-[12px] font-medium truncate block">
+            <div class="search-fund-list__identity">
+              <div class="search-fund-list__headline">
+                <span class="search-fund-list__name">
                   <span v-html="highlightText(item.label, query)" />
                 </span>
                 <span
                   v-if="item.tag"
-                  class="shrink-0 px-1.5 py-[1px] rounded text-[10px] bg-[#1a2b4a] text-blue-400 border border-blue-500/20 leading-none"
+                  class="search-fund-list__tag"
                 >
                   {{ item.tag }}
                 </span>
               </div>
-              <span class="text-white/40 text-[11px] tracking-tight truncate block">
+              <span class="search-fund-list__description">
                 <span v-html="highlightText(item.desc || '', query)" />
               </span>
             </div>
-            
 
-            <div class="flex gap-[6px] items-start shrink-0">
-              <span class="text-white/80 text-[12px] tracking-tight w-11 pt-0.5 text-right font-mono">
+            <div class="search-fund-list__metrics">
+              <span class="search-fund-list__quote">
                 {{ item.gsz ?? '--' }}
               </span>
-              <div class="flex flex-col items-end w-20 gap-2">
+              <div class="search-fund-list__action-column">
                 <template v-if="item.gszzl !== undefined">
                   <span
-                    class="font-mono text-[12px] font-semibold px-1.5 rounded w-fit tracking-tight"
-                    :class="item.gszzl >= 0 ? 'text-up bg-up/10' : 'text-down bg-down/10'"
+                    :class="[
+                      'search-fund-list__change-badge',
+                      item.gszzl >= 0
+                        ? 'search-fund-list__change-badge--rise'
+                        : 'search-fund-list__change-badge--fall',
+                    ]"
                   >
                     {{ item.gszzl >= 0 ? '+' : '' }}{{ item.gszzl.toFixed(2) }}%
                   </span>
                 </template>
                 <span
                   v-else
-                  class="text-white/30 font-mono text-[12px] px-1.5"
+                  class="search-fund-list__change-placeholder"
                 >--</span>
 
-
-                <button 
+                <button
                   v-if="addedKeys.has(item.value)"
-                  class="flex items-center justify-center gap-1 w-16 py-1 border border-[#10B981]/30 rounded text-[#10B981] text-[11px] bg-transparent cursor-default"
+                  class="search-fund-list__action-button search-fund-list__action-button--added"
                 >
-                  <Check class="w-3 h-3" /> 已添加
+                  <Check class="search-fund-list__action-icon" /> 已添加
                 </button>
-                <button 
+                <button
                   v-else
+                  class="search-fund-list__action-button search-fund-list__action-button--add"
                   @click="handleAdd(item.value)"
-                  class="flex items-center justify-center gap-1 w-16 py-1 border border-[#3B82F6]/40 rounded text-[#3B82F6] hover:bg-[#3B82F6]/10 hover:border-[#3B82F6] text-[11px] bg-transparent transition-colors cursor-pointer"
                 >
-                  <Plus class="w-3 h-3" /> 添加
+                  <Plus class="search-fund-list__action-icon" /> 添加
                 </button>
               </div>
             </div>
@@ -276,18 +277,15 @@ const handleAdd = (code: string) => {
         </ul>
       </template>
 
-
       <div
         v-else-if="!loading"
-        class="pt-16 flex flex-col items-center opacity-30"
+        class="search-fund-list__empty-state"
       >
-        <Search class="w-8 h-8 mb-4 text-white" />
-        <span class="text-[12px] font-sans text-white/80">未找到任何匹配项</span>
+        <Search class="search-fund-list__empty-icon" />
+        <span class="search-fund-list__empty-text">未找到任何匹配项</span>
       </div>
     </div>
   </div>
 </template>
 
-<style scoped>
-/* 纯原生 SVG 控制，不再需要外部 CSS Keyframes */
-</style>
+<style scoped lang="scss" src="./FundSearchList.scss"></style>

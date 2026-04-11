@@ -1,0 +1,36 @@
+@mixin button-reset {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+}
+
+@mixin truncate {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@mixin focus-ring($border-color: var(--color-border-focus)) {
+  outline: none;
+  border-color: $border-color;
+  box-shadow: 0 0 0 1px $border-color;
+}
+
+@mixin surface-card(
+  $background: var(--color-surface-muted),
+  $border-color: var(--color-border-subtle),
+  $radius: 16px
+) {
+  border: 1px solid $border-color;
+  border-radius: $radius;
+  background: $background;
+}
+
+@mixin status-text($color) {
+  color: $color;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}

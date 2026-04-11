@@ -60,54 +60,50 @@ watch(
 </script>
 
 <template>
-  <div class="ticker-wrapper border-b border-white/6 h-12 flex items-center relative bg-[#0d0f12]">
-    <div class="shrink-0 w-[60px] h-full flex flex-col items-center justify-center relative z-20 bg-[#0d0f12]">
-      <div
-        class="w-1.5 h-1.5 rounded-full bg-blue-500 mb-0.5 animate-pulse"
-        style="box-shadow: 0 0 8px rgba(59, 130, 246, 0.8);"
-      />
-      <div class="text-[10px] font-bold text-blue-500 tracking-wider font-mono">
+  <div class="global-ticker">
+    <div class="global-ticker__live-badge">
+      <div class="global-ticker__live-dot" />
+      <div class="global-ticker__live-text">
         LIVE
       </div>
     </div>
 
-
     <div
       ref="wrapperRef"
-      class="flex-1 h-full relative overflow-hidden whitespace-nowrap"
+      class="global-ticker__viewport"
     >
-      <div class="absolute left-0 top-0 bottom-0 w-16 z-10 pointer-events-none bg-gradient-to-r from-[#0d0f12] to-transparent" />
-      <div class="absolute right-0 top-0 bottom-0 w-16 z-10 pointer-events-none bg-gradient-to-l from-[#0d0f12] to-transparent" />
-
+      <div class="global-ticker__fade global-ticker__fade--left" />
+      <div class="global-ticker__fade global-ticker__fade--right" />
 
       <div
         v-if="isLoading || !isDataReady"
-        class="ticker-skeleton flex items-center h-full gap-4 px-4"
+        class="global-ticker__skeleton"
       >
         <div
           v-for="i in 8"
           :key="i"
-          class="skeleton-item flex items-center gap-2"
+          class="global-ticker__skeleton-item"
         >
-          <div class="skeleton-chart" />
-          <div class="flex flex-col gap-1">
-            <div class="skeleton-line w-12" />
-            <div class="skeleton-line w-8" />
+          <div class="global-ticker__skeleton-chart" />
+          <div class="global-ticker__skeleton-copy">
+            <div class="global-ticker__skeleton-line global-ticker__skeleton-line--primary" />
+            <div class="global-ticker__skeleton-line global-ticker__skeleton-line--secondary" />
           </div>
         </div>
       </div>
 
-
       <div
         v-else
-        class="ticker-track flex items-center h-full"
-        :class="{ 'is-animating': isMarqueeEnabled, 'track-visible': isDataReady }"
+        class="global-ticker__track"
+        :class="{
+          'global-ticker__track--animating': isMarqueeEnabled,
+          'global-ticker__track--ready': isDataReady,
+        }"
         :style="isMarqueeEnabled ? { animationDuration: `${animationDuration}s` } : {}"
       >
-        <!-- 第一份：用于测量实际需要的宽度 -->
         <div
           ref="trackContentRef"
-          class="flex items-center h-full"
+          class="global-ticker__track-copy"
         >
           <TickerCard
             v-for="item in dataList"
@@ -115,10 +111,9 @@ watch(
             :item="item"
           />
         </div>
-        <!-- 第二份：仅在内容超出容器需要跑马灯时才渲染，实现无缝对接 -->
         <div
           v-if="isMarqueeEnabled"
-          class="flex items-center h-full"
+          class="global-ticker__track-copy"
         >
           <TickerCard
             v-for="item in dataList"
@@ -131,81 +126,4 @@ watch(
   </div>
 </template>
 
-<style scoped>
-.ticker-wrapper {
-  position: relative;
-  width: 100%;
-}
-
-
-.ticker-skeleton {
-  width: max-content;
-}
-
-.skeleton-item {
-  min-width: 160px;
-  padding: 0 20px;
-}
-
-.skeleton-chart {
-  width: 80px;
-  height: 35px;
-  border-radius: 4px;
-  background: linear-gradient(
-    90deg,
-    rgba(255, 255, 255, 0.04) 25%,
-    rgba(255, 255, 255, 0.09) 50%,
-    rgba(255, 255, 255, 0.04) 75%
-  );
-  background-size: 200% 100%;
-  animation: shimmer 1.6s infinite;
-}
-
-.skeleton-line {
-  height: 10px;
-  border-radius: 999px;
-  background: linear-gradient(
-    90deg,
-    rgba(255, 255, 255, 0.04) 25%,
-    rgba(255, 255, 255, 0.09) 50%,
-    rgba(255, 255, 255, 0.04) 75%
-  );
-  background-size: 200% 100%;
-  animation: shimmer 1.6s infinite;
-}
-
-@keyframes shimmer {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
-}
-
-
-.ticker-track {
-  width: max-content;
-  opacity: 0;
-  transition: opacity 0.4s ease;
-}
-
-.ticker-track.track-visible {
-  opacity: 1;
-}
-
-.ticker-track.is-animating {
-  animation-name: marquee;
-  animation-timing-function: linear;
-  animation-iteration-count: infinite;
-}
-
-.ticker-wrapper:hover .ticker-track.is-animating {
-  animation-play-state: paused;
-}
-
-@keyframes marquee {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(-50%);
-  }
-}
-</style>
+<style scoped lang="scss" src="./GlobalTicker.scss"></style>

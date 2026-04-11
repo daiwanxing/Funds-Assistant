@@ -14,70 +14,74 @@ defineProps<{
 </script>
 
 <template>
-  <div
-    class="px-5 py-5 border-b border-white/[0.06] shrink-0 flex items-start justify-between gap-8"
-  >
-    <div class="flex min-w-0 flex-col gap-3 overflow-hidden pt-0.5">
-      <div class="flex items-center gap-3 min-w-0">
-        <span class="rounded-[14px] border border-white/[0.08] bg-white/[0.04] px-3 py-[7px] text-[12px] font-medium text-white/62 font-mono tracking-[0.08em] shrink-0 leading-none">
+  <div class="fund-detail-hero">
+    <div class="fund-detail-hero__identity">
+      <div class="fund-detail-hero__code-row">
+        <span class="fund-detail-hero__code">
           {{ profile.code }}
         </span>
       </div>
 
-      <div class="flex items-start gap-3 min-w-0">
-        <span class="text-[30px] font-semibold text-white/92 font-sans leading-[1.1] break-words whitespace-normal max-w-[720px]">
+      <div class="fund-detail-hero__title-row">
+        <span class="fund-detail-hero__name">
           {{ profile.name }}
         </span>
-        <span class="mt-1 rounded-[10px] border border-[rgba(47,129,247,0.28)] bg-[rgba(47,129,247,0.11)] px-2 py-[5px] text-[10px] text-[#7fb0ff] font-sans shrink-0 leading-none">
+        <span class="fund-detail-hero__category">
           {{ categoryLabel || "基金" }}
         </span>
       </div>
 
       <div
         v-if="metaTags?.length"
-        class="flex flex-wrap gap-1.5"
+        class="fund-detail-hero__tag-list"
       >
         <span
           v-for="tag in metaTags"
           :key="tag"
-          class="rounded-full border border-white/[0.06] bg-white/[0.02] px-2.5 py-[5px] text-[10px] text-white/40 font-sans tracking-wide leading-none"
+          class="fund-detail-hero__tag"
         >
           {{ tag }}
         </span>
       </div>
     </div>
 
-    <div class="flex flex-col items-end gap-1 shrink-0 pt-0.5">
-      <div class="flex items-baseline gap-2">
+    <div class="fund-detail-hero__metrics">
+      <div class="fund-detail-hero__value-row">
         <span
-          class="text-[44px] leading-none font-semibold font-mono tracking-[-0.04em]"
-          :class="isRising ? 'text-up' : 'text-down'"
+          :class="[
+            'fund-detail-hero__value',
+            isRising ? 'fund-detail-hero__value--rise' : 'fund-detail-hero__value--fall',
+          ]"
         >
           {{ latestNav != null ? latestNav.toFixed(4) : '--' }}
         </span>
         <span
           v-if="periodReturn != null"
-          class="text-[16px] font-semibold font-mono"
-          :class="isRising ? 'text-up' : 'text-down'"
+          :class="[
+            'fund-detail-hero__delta',
+            isRising ? 'fund-detail-hero__delta--rise' : 'fund-detail-hero__delta--fall',
+          ]"
         >
           {{ periodReturn >= 0 ? '+' : '' }}{{ periodReturn.toFixed(2) }}%
         </span>
         <span
           v-else
-          class="text-[16px] text-white/30 font-mono"
+          class="fund-detail-hero__delta fund-detail-hero__delta--empty"
         >
           --
         </span>
       </div>
 
-      <div class="flex items-center gap-2.5">
-        <span class="text-[11px] text-white/30 font-sans tracking-wide">
+      <div class="fund-detail-hero__meta">
+        <span class="fund-detail-hero__period">
           {{ periodLabel }}
         </span>
-        <span class="rounded-[10px] bg-white/[0.05] px-2 py-[5px] text-[10px] text-white/24 font-sans tracking-wide leading-none">
+        <span class="fund-detail-hero__value-label">
           {{ valueLabel || "净值" }}
         </span>
       </div>
     </div>
   </div>
 </template>
+
+<style scoped lang="scss" src="./FundDetailHero.scss"></style>

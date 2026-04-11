@@ -279,11 +279,11 @@ describe("HomePage selection behavior", () => {
   it("uses a two-column semantic shell with the personal info panel fixed at the aside bottom", async () => {
     const wrapper = await mountPage();
 
-    expect(wrapper.find("header.market-ticker").exists()).toBe(true);
-    expect(wrapper.find("aside.watchlist-aside").exists()).toBe(true);
-    expect(wrapper.find("section.fund-detail-section").exists()).toBe(true);
-    expect(wrapper.find(".watchlist-panel").exists()).toBe(true);
-    expect(wrapper.find(".personal-info-panel").exists()).toBe(true);
+    expect(wrapper.find(".dashboard-page__ticker").exists()).toBe(true);
+    expect(wrapper.find(".dashboard-page__sidebar").exists()).toBe(true);
+    expect(wrapper.find(".dashboard-page__detail").exists()).toBe(true);
+    expect(wrapper.find(".dashboard-page__sidebar-body").exists()).toBe(true);
+    expect(wrapper.find(".dashboard-page__sidebar-footer").exists()).toBe(true);
     expect(wrapper.find("footer").exists()).toBe(false);
     expect(wrapper.find(".status-bar").exists()).toBe(false);
   });

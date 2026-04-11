@@ -25,7 +25,9 @@ const isUp = computed(() => {
 });
 
 // 颜色 Token 引用
-const colorClass = computed(() => (isUp.value ? "text-up" : "text-down"));
+const toneClass = computed(() =>
+  isUp.value ? "ticker-card__change--rise" : "ticker-card__change--fall",
+);
 const gradientId = computed(() => `spark-grad-${props.item.f12}`); // 唯一渐变ID
 
 // 图表尺寸 (适配高度 35)
@@ -73,12 +75,12 @@ const chartAreaPath = computed(() => {
 </script>
 
 <template>
-  <div class="ticker-card flex items-center h-full px-5 cursor-default transition-colors relative">
-    <div class="mr-3 shrink-0 flex items-center mt-1">
+  <div class="ticker-card">
+    <div class="ticker-card__sparkline">
       <svg
         :width="WIDTH"
         :height="HEIGHT"
-        class="overflow-visible"
+        class="ticker-card__sparkline-canvas"
       >
         <defs>
 
@@ -127,25 +129,23 @@ const chartAreaPath = computed(() => {
       </svg>
     </div>
 
-
     <Motion
       as="div"
-      class="flex flex-col justify-center min-w-[76px]"
+      class="ticker-card__content"
       :initial="{ opacity: 0, x: 4 }"
       :animate="{ opacity: 1, x: 0 }"
       :transition="{ delay: 0.6, duration: 0.5, ease: 'easeOut' }"
     >
-      <div class="flex items-center mb-0.5">
-        <span class="text-[11px] font-medium text-white/50 tracking-wide">{{ item.f14 }}</span>
+      <div class="ticker-card__label-row">
+        <span class="ticker-card__label">{{ item.f14 }}</span>
       </div>
-      <div class="flex items-baseline gap-1.5">
-        <span class="text-[14px] font-bold text-white tracking-tight">
+      <div class="ticker-card__value-row">
+        <span class="ticker-card__price">
           {{ item.f2 === "-" ? "--" : item.f2 }}
         </span>
         <span
           v-if="item.f3 !== undefined && item.f3 !== '-'"
-          :class="colorClass"
-          class="text-[11px] font-medium font-mono"
+          :class="['ticker-card__change', toneClass]"
         >
           {{ Number(item.f3) > 0 ? "+" : "" }}{{ item.f3 }}%
         </span>
@@ -154,8 +154,4 @@ const chartAreaPath = computed(() => {
   </div>
 </template>
 
-<style scoped>
-.ticker-card {
-  min-width: 160px;
-}
-</style>
+<style scoped lang="scss" src="./TickerCard.scss"></style>

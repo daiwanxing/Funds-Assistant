@@ -41,6 +41,9 @@ describe("FundAnalysisPanel", () => {
     });
 
     expect(wrapper.text()).toContain("持仓明细");
+    expect(wrapper.find(".fund-analysis-panel").exists()).toBe(true);
+    expect(wrapper.find(".fund-analysis-panel__tab-button--active").exists()).toBe(true);
+    expect(wrapper.find(".fund-analysis-panel__leader-grid").exists()).toBe(true);
     expect(wrapper.text()).toContain("AI 分析");
     expect(wrapper.text()).toContain("BETA");
     expect(wrapper.text()).toContain("全宽重仓信念榜");
@@ -63,6 +66,7 @@ describe("FundAnalysisPanel", () => {
     });
 
     expect(wrapper.text()).toContain("持仓明细");
+    expect(wrapper.find(".fund-analysis-panel__empty-state").exists()).toBe(true);
     expect(wrapper.text()).toContain("该基金暂无股票重仓披露");
     expect(wrapper.text()).toContain("行业拆解待补齐");
     expect(wrapper.findAll("[data-test='holding-leader-card']")).toHaveLength(0);
