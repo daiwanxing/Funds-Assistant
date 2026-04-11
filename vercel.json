@@ -1,0 +1,41 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "vite",
+  "buildCommand": "pnpm build",
+  "outputDirectory": "dist",
+  "devCommand": "VITE_DEV_SERVER_PORT=$PORT pnpm dev:ui",
+  "rewrites": [
+    {
+      "source": "/api/fund/(.*)",
+      "destination": "https://fundmobapi.eastmoney.com/$1"
+    },
+    {
+      "source": "/api/fundgz/(.*)",
+      "destination": "https://fundgz.1234567.com.cn/$1"
+    },
+    {
+      "source": "/api/search/(.*)",
+      "destination": "https://fundsuggest.eastmoney.com/$1"
+    },
+    {
+      "source": "/api/index/(.*)",
+      "destination": "https://push2delay.eastmoney.com/$1"
+    },
+    {
+      "source": "/api/kline/(.*)",
+      "destination": "https://push2his.eastmoney.com/$1"
+    },
+    {
+      "source": "/api/pingzhongdata/(.*)",
+      "destination": "https://fund.eastmoney.com/pingzhongdata/$1"
+    },
+    {
+      "source": "/api/fundpage/(.*)",
+      "destination": "https://fund.eastmoney.com/$1"
+    },
+    {
+      "source": "/api/fundf10/(.*)",
+      "destination": "https://fundf10.eastmoney.com/$1"
+    }
+  ]
+}
