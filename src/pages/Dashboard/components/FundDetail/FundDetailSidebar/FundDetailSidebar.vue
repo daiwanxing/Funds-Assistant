@@ -28,24 +28,26 @@ const overviewRows = computed(() => {
 <template>
   <aside
     data-test="fund-detail-sidebar"
-    class="bg-[var(--bg-1)] px-4 py-4 overflow-y-auto"
+    class="fund-detail-sidebar"
   >
-    <section class="px-1">
-      <h3 class="mb-3 text-[11px] text-white/28 font-sans tracking-[0.18em]">
+    <section class="fund-detail-sidebar__section">
+      <h3 class="fund-detail-sidebar__title">
         基金概况
       </h3>
 
-      <div class="overflow-hidden rounded-[18px] border border-white/[0.05] bg-[rgba(255,255,255,0.015)]">
+      <div class="fund-detail-sidebar__card">
         <div
           v-for="(item, index) in overviewRows"
           :key="item.label"
-          class="flex items-center justify-between gap-4 px-4 py-3 text-[12px] border-b border-white/[0.04] last:border-b-0"
-          :class="index % 2 === 0 ? 'bg-white/[0.04]' : 'bg-transparent'"
+          :class="[
+            'fund-detail-sidebar__row',
+            { 'fund-detail-sidebar__row--muted': index % 2 === 0 },
+          ]"
         >
-          <span class="shrink-0 text-white/44 font-sans">
+          <span class="fund-detail-sidebar__label">
             {{ item.label }}：
           </span>
-          <span class="text-right text-white/86 font-medium font-sans break-all">
+          <span class="fund-detail-sidebar__value">
             {{ item.value }}
           </span>
         </div>
@@ -53,3 +55,5 @@ const overviewRows = computed(() => {
     </section>
   </aside>
 </template>
+
+<style scoped lang="scss" src="./FundDetailSidebar.scss"></style>

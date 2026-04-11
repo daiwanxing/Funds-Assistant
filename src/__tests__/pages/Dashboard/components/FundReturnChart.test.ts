@@ -1,7 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { mount } from "@vue/test-utils";
-import FundReturnChart from "@/pages/Dashboard/components/FundDetail/FundReturnChart.vue";
-import { createFundReturnChartOption } from "@/pages/Dashboard/components/FundDetail/fundReturnChartOptions";
+import FundReturnChart, { createFundReturnChartOption } from "@/pages/Dashboard/components/FundDetail/FundReturnChart";
 import type { ACWorthPoint } from "@/types/fund";
 
 const points: ACWorthPoint[] = [

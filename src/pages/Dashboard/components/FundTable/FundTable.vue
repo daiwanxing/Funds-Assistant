@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { FundItem } from "@/types";
 
-defineProps<{
+const props = defineProps<{
   dataList: FundItem[];
   isEdit: boolean;
   darkMode: boolean;
@@ -33,7 +33,29 @@ const fmtLocale = (n: number | string): string => {
   return parseFloat(String(n)).toLocaleString("zh", {
     minimumFractionDigits: 2,
   });
-}
+};
+
+const sortIndicator = (value?: string): string => {
+  return value === "desc" ? "↓" : value === "asc" ? "↑" : "";
+};
+
+const valueToneClass = (value: number): string => {
+  return value >= 0 ? "fund-table__cell--positive" : "fund-table__cell--negative";
+};
+
+const rowStateClass = (isEdit: boolean): string => {
+  return isEdit ? "fund-table__row--editable" : "fund-table__row--interactive";
+};
+
+const rowNameClass = (isEdit: boolean): string => {
+  return isEdit ? "fund-table__name-cell" : "fund-table__name-cell fund-table__name-cell--link";
+};
+
+const focusButtonClass = (isActive: boolean): string => {
+  return isActive
+    ? "fund-table__icon-button fund-table__icon-button--active"
+    : "fund-table__icon-button";
+};
 </script>
 
 <template>
@@ -42,152 +64,140 @@ const fmtLocale = (n: number | string): string => {
     :element-loading-background="
       darkMode ? 'rgba(0,0,0,0.9)' : 'rgba(255,255,255,0.9)'
     "
-    class="max-h-425px overflow-y-auto min-h-160px"
+    class="fund-table"
   >
-    <table class="w-full border-collapse text-right text-xs">
-      <thead>
-        <tr>
-          <th class="text-left p-2">
+    <table class="fund-table__table">
+      <thead class="fund-table__head">
+        <tr class="fund-table__head-row">
+          <th class="fund-table__head-cell fund-table__head-cell--name">
             基金名称（{{ dataList.length }}）
           </th>
-          <th v-if="isEdit">
+          <th
+            v-if="isEdit"
+            class="fund-table__head-cell"
+          >
             基金代码
           </th>
-          <th v-if="showGSZ && !isEdit">
+          <th
+            v-if="showGSZ && !isEdit"
+            class="fund-table__head-cell"
+          >
             估算净值
           </th>
           <th
             v-if="isEdit && (showCostRate || showCost)"
-            class="text-center"
+            class="fund-table__head-cell fund-table__head-cell--center"
           >
             成本价
           </th>
           <th
             v-if="showAmount"
-            class="cursor-pointer"
+            class="fund-table__head-cell fund-table__head-cell--sortable"
             @click="$emit('sort', 'amount')"
           >
             持有额
-            <span
-              class="text-xs"
-              :class="sortType.amount"
-            >{{
-              sortType.amount === "desc"
-                ? "↓"
-                : sortType.amount === "asc"
-                  ? "↑"
-                  : ""
-            }}</span>
+            <span class="fund-table__sort-indicator">{{ sortIndicator(props.sortType.amount) }}</span>
           </th>
           <th
             v-if="showCost"
-            class="cursor-pointer"
+            class="fund-table__head-cell fund-table__head-cell--sortable"
             @click="$emit('sort', 'costGains')"
           >
             持有收益
-            <span
-              class="text-xs"
-              :class="sortType.costGains"
-            >{{
-              sortType.costGains === "desc"
-                ? "↓"
-                : sortType.costGains === "asc"
-                  ? "↑"
-                  : ""
-            }}</span>
+            <span class="fund-table__sort-indicator">{{ sortIndicator(props.sortType.costGains) }}</span>
           </th>
           <th
             v-if="showCostRate"
-            class="cursor-pointer"
+            class="fund-table__head-cell fund-table__head-cell--sortable"
             @click="$emit('sort', 'costGainsRate')"
           >
             持有收益率
-            <span class="text-xs">{{
-              sortType.costGainsRate === "desc"
-                ? "↓"
-                : sortType.costGainsRate === "asc"
-                  ? "↑"
-                  : ""
-            }}</span>
+            <span class="fund-table__sort-indicator">{{ sortIndicator(props.sortType.costGainsRate) }}</span>
           </th>
           <th
-            class="cursor-pointer"
+            class="fund-table__head-cell fund-table__head-cell--sortable"
             @click="$emit('sort', 'gszzl')"
           >
             涨跌幅
-            <span class="text-xs">{{
-              sortType.gszzl === "desc"
-                ? "↓"
-                : sortType.gszzl === "asc"
-                  ? "↑"
-                  : ""
-            }}</span>
+            <span class="fund-table__sort-indicator">{{ sortIndicator(props.sortType.gszzl) }}</span>
           </th>
           <th
             v-if="showGains"
-            class="cursor-pointer"
+            class="fund-table__head-cell fund-table__head-cell--sortable"
             @click="$emit('sort', 'gains')"
           >
             估算收益
-            <span class="text-xs">{{
-              sortType.gains === "desc"
-                ? "↓"
-                : sortType.gains === "asc"
-                  ? "↑"
-                  : ""
-            }}</span>
+            <span class="fund-table__sort-indicator">{{ sortIndicator(props.sortType.gains) }}</span>
           </th>
-          <th v-if="!isEdit">
+          <th
+            v-if="!isEdit"
+            class="fund-table__head-cell"
+          >
             更新时间
           </th>
           <th
-            v-if="
-              isEdit && (showAmount || showGains || showCost || showCostRate)
-            "
-            class="text-center"
+            v-if="isEdit && (showAmount || showGains || showCost || showCostRate)"
+            class="fund-table__head-cell fund-table__head-cell--center"
           >
             持有份额
           </th>
-          <th v-if="isEdit && badgeContent === 1">
+          <th
+            v-if="isEdit && badgeContent === 1"
+            class="fund-table__head-cell"
+          >
             特别关注
           </th>
-          <th v-if="isEdit">
+          <th
+            v-if="isEdit"
+            class="fund-table__head-cell"
+          >
             删除
           </th>
         </tr>
       </thead>
-      <tbody>
+
+      <tbody class="fund-table__body">
         <tr
           v-for="(el, index) in dataList"
           :key="el.fundcode"
           :draggable="isEdit"
-          :class="isEdit ? 'cursor-move' : ''"
-          class="hover:bg-blue-50/50"
+          :class="['fund-table__row', rowStateClass(isEdit)]"
           @dragstart="$emit('dragStart', $event, el)"
           @dragover.prevent="$emit('dragOver', $event, el)"
           @dragenter="$emit('dragEnter', $event, el, index)"
           @dragend="$emit('dragEnd', $event, el)"
         >
           <td
-            class="text-left p-1.5"
-            :class="isEdit ? '' : 'cursor-pointer hover:text-blue-500'"
+            :class="rowNameClass(isEdit)"
             :title="el.name"
             @click.stop="!isEdit && $emit('fundDetail', el)"
           >
             <span
               v-if="el.hasReplace"
-              class="inline-block px-0.5 mr-0.5 rounded-sm text-blue-500 border border-blue-500 text-xs leading-3"
+              class="fund-table__replace-badge"
             >✔</span>{{ el.name }}
           </td>
-          <td v-if="isEdit">
+
+          <td
+            v-if="isEdit"
+            class="fund-table__cell"
+          >
             {{ el.fundcode }}
           </td>
-          <td v-if="showGSZ && !isEdit">
+
+          <td
+            v-if="showGSZ && !isEdit"
+            class="fund-table__cell"
+          >
             {{ el.gsz }}
           </td>
-          <td v-if="isEdit && (showCostRate || showCost)">
+
+          <td
+            v-if="isEdit && (showCostRate || showCost)"
+            class="fund-table__cell"
+          >
             <input
-              class="border border-gray-300 rounded px-1 py-0.5 text-xs w-70px text-center"
+              class="fund-table__input"
               placeholder="持仓成本价"
               :value="el.cost"
               type="text"
@@ -197,66 +207,52 @@ const fmtLocale = (n: number | string): string => {
               "
             >
           </td>
-          <td v-if="showAmount">
+
+          <td
+            v-if="showAmount"
+            class="fund-table__cell"
+          >
             {{ fmtLocale(el.amount) }}
           </td>
+
           <td
             v-if="showCost"
-            :class="
-              el.costGains >= 0
-                ? 'text-red-500 font-bold'
-                : 'text-green-600 font-bold'
-            "
+            :class="['fund-table__cell', valueToneClass(el.costGains)]"
           >
             {{ fmtLocale(el.costGains) }}
           </td>
+
           <td
             v-if="showCostRate"
-            :class="
-              el.costGainsRate >= 0
-                ? 'text-red-500 font-bold'
-                : 'text-green-600 font-bold'
-            "
+            :class="['fund-table__cell', valueToneClass(el.costGainsRate)]"
           >
             {{ el.cost > 0 ? el.costGainsRate + "%" : "" }}
           </td>
-          <td
-            :class="
-              el.gszzl >= 0
-                ? 'text-red-500 font-bold'
-                : 'text-green-600 font-bold'
-            "
-          >
+
+          <td :class="['fund-table__cell', valueToneClass(el.gszzl)]">
             {{ el.gszzl }}%
           </td>
+
           <td
             v-if="showGains"
-            :class="
-              el.gains >= 0
-                ? 'text-red-500 font-bold'
-                : 'text-green-600 font-bold'
-            "
+            :class="['fund-table__cell', valueToneClass(el.gains)]"
           >
             {{ fmtLocale(el.gains) }}
           </td>
+
           <td
             v-if="!isEdit"
-            class="text-xs text-gray-400"
+            class="fund-table__cell fund-table__cell--time"
           >
-            {{
-              el.hasReplace
-                ? el.gztime?.substring(5, 10)
-                : el.gztime?.substring(10)
-            }}
+            {{ el.hasReplace ? el.gztime?.substring(5, 10) : el.gztime?.substring(10) }}
           </td>
+
           <td
-            v-if="
-              isEdit && (showAmount || showGains || showCost || showCostRate)
-            "
-            class="text-center"
+            v-if="isEdit && (showAmount || showGains || showCost || showCostRate)"
+            class="fund-table__cell fund-table__cell--center"
           >
             <input
-              class="border border-gray-300 rounded px-1 py-0.5 text-xs w-70px text-center"
+              class="fund-table__input"
               placeholder="输入持有份额"
               :value="el.num"
               type="text"
@@ -266,22 +262,25 @@ const fmtLocale = (n: number | string): string => {
               "
             >
           </td>
-          <td v-if="isEdit && badgeContent === 1">
+
+          <td
+            v-if="isEdit && badgeContent === 1"
+            class="fund-table__cell fund-table__cell--center"
+          >
             <button
-              class="text-xs border rounded px-1 cursor-pointer"
-              :class="
-                el.fundcode === realtimeFundcode
-                  ? 'bg-blue-100 border-blue-400'
-                  : 'border-gray-300'
-              "
+              :class="focusButtonClass(el.fundcode === realtimeFundcode)"
               @click="$emit('select', el.fundcode)"
             >
               ✔
             </button>
           </td>
-          <td v-if="isEdit">
+
+          <td
+            v-if="isEdit"
+            class="fund-table__cell fund-table__cell--center"
+          >
             <button
-              class="text-xs text-red-500 border border-red-300 rounded px-1 cursor-pointer"
+              class="fund-table__icon-button fund-table__icon-button--danger"
               @click="$emit('delete', el.fundcode)"
             >
               ✖
@@ -293,12 +292,4 @@ const fmtLocale = (n: number | string): string => {
   </div>
 </template>
 
-<style scoped>
-table th {
-  padding: 8px 6px;
-  white-space: nowrap;
-}
-table td {
-  padding: 6px;
-}
-</style>
+<style scoped lang="scss" src="./FundTable.scss"></style>

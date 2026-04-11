@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { mount } from "@vue/test-utils";
 import { ref } from "vue";
-import FundDetail from "@/pages/Dashboard/components/FundDetail/FundDetail.vue";
+import FundDetail from "@/pages/Dashboard/components/FundDetail/FundDetail";
 import type { ACWorthPoint, FundProfile } from "@/types/fund";
 
 const createProfile = (): FundProfile => ({

@@ -1,1 +1,1 @@
-export { default as FundDetail } from "./FundDetail.vue";
+export { default as FundDetail } from "./FundDetail";

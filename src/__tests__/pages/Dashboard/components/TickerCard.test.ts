@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { mount } from "@vue/test-utils";
-import TickerCard from "@/pages/Dashboard/components/GlobalTicker/TickerCard.vue";
+import TickerCard from "@/pages/Dashboard/components/GlobalTicker/TickerCard";
 
 describe("TickerCard", () => {
   it("keeps unused width on the right during an unfinished trading session", () => {

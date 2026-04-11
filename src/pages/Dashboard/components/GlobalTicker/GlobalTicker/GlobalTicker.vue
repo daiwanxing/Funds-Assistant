@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, watch, nextTick } from "vue";
 import type { GlobalIndexItem } from "@/composables/index/useGlobalIndices";
-import TickerCard from "./TickerCard.vue";
+import TickerCard from "../TickerCard";
 
 const props = defineProps<{
   dataList: GlobalIndexItem[];

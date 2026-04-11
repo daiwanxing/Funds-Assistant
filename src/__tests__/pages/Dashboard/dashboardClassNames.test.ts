@@ -2,9 +2,9 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { mount } from "@vue/test-utils";
 import { computed, ref } from "vue";
 import HomePage from "@/pages/Dashboard/HomePage.vue";
-import WatchlistHeader from "@/pages/Dashboard/components/WatchlistHeader.vue";
-import FundSavedList from "@/pages/Dashboard/components/FundSavedList.vue";
-import FundDetail from "@/pages/Dashboard/components/FundDetail/FundDetail.vue";
+import WatchlistHeader from "@/pages/Dashboard/components/WatchlistHeader";
+import FundSavedList from "@/pages/Dashboard/components/FundSavedList";
+import FundDetail from "@/pages/Dashboard/components/FundDetail/FundDetail";
 import type { FundItem, FundListItem } from "@/types/fund";
 
 const preferencesState = {

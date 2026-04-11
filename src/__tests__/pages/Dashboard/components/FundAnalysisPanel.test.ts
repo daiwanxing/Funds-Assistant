@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { mount } from "@vue/test-utils";
-import FundAnalysisPanel from "@/pages/Dashboard/components/FundDetail/FundAnalysisPanel.vue";
+import FundAnalysisPanel from "@/pages/Dashboard/components/FundDetail/FundAnalysisPanel";
 import type { FundHoldingItem, FundIndustryItem } from "@/types/fund";
 
 const createHolding = (

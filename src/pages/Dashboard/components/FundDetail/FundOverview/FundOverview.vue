@@ -34,36 +34,38 @@ const rows = computed<KVItem[][]>(() => {
 });
 
 const getReturnClass = (value: string): string => {
-  if (!value || value === "--") return "text-white/80";
+  if (!value || value === "--") return "fund-overview__value--neutral";
   const num = parseFloat(value);
-  if (Number.isNaN(num)) return "text-white/80";
-  return num >= 0 ? "text-up" : "text-down";
+  if (Number.isNaN(num)) return "fund-overview__value--neutral";
+  return num >= 0 ? "fund-overview__value--positive" : "fund-overview__value--negative";
 };
 </script>
 
 <template>
-  <div class="p-4 overflow-y-auto flex flex-col">
-    <span class="text-[11px] text-white/40 font-sans tracking-wide mb-3 shrink-0">
+  <div class="fund-overview">
+    <span class="fund-overview__title">
       基金概况
     </span>
 
-    <div class="flex flex-col gap-2.5">
+    <div class="fund-overview__rows">
       <div
         v-for="(row, ri) in rows"
         :key="ri"
-        class="flex gap-4"
+        class="fund-overview__row"
       >
         <div
           v-for="(item, ci) in row"
           :key="ci"
-          class="flex-1 min-w-0"
+          class="fund-overview__cell"
         >
-          <div class="text-[10px] text-white/30 font-sans mb-0.5">
+          <div class="fund-overview__label">
             {{ item.label }}
           </div>
           <div
-            class="text-[13px] font-mono font-medium"
-            :class="item.isReturn ? getReturnClass(item.value) : 'text-white/85'"
+            :class="[
+              'fund-overview__value',
+              item.isReturn ? getReturnClass(item.value) : 'fund-overview__value--default',
+            ]"
           >
             {{ item.value }}
           </div>
@@ -72,3 +74,5 @@ const getReturnClass = (value: string): string => {
     </div>
   </div>
 </template>
+
+<style scoped lang="scss" src="./FundOverview.scss"></style>

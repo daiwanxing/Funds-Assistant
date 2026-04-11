@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { mount } from "@vue/test-utils";
 import { ref } from "vue";
-import FundHoldings from "@/pages/Dashboard/components/FundDetail/FundHoldings.vue";
+import FundHoldings from "@/pages/Dashboard/components/FundDetail/FundHoldings";
 import type { FundHoldingItem } from "@/types/fund";
 
 const createHolding = (

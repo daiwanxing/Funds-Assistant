@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, vi } from "vitest";
 import { mount, flushPromises } from "@vue/test-utils";
 import { defineComponent, ref, nextTick, reactive } from "vue";
 import HomePage from "@/pages/Dashboard/HomePage.vue";
-import FundSavedList from "@/pages/Dashboard/components/FundSavedList.vue";
+import FundSavedList from "@/pages/Dashboard/components/FundSavedList";
 import type { FundItem, FundListItem } from "@/types/fund";
 
 const settingsState = {

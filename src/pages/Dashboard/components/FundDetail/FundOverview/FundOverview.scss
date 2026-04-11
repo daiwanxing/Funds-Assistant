@@ -1,0 +1,58 @@
+.fund-overview {
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  padding: 16px;
+
+  &__title {
+    flex-shrink: 0;
+    margin-bottom: 12px;
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+  }
+
+  &__rows {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  &__row {
+    display: flex;
+    gap: 16px;
+  }
+
+  &__cell {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__label {
+    margin-bottom: 2px;
+    color: rgba(255, 255, 255, 0.3);
+    font-size: 10px;
+  }
+
+  &__value {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-weight: 500;
+
+    &--default {
+      color: rgba(255, 255, 255, 0.85);
+    }
+
+    &--neutral {
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    &--positive {
+      color: var(--color-rise-primary);
+    }
+
+    &--negative {
+      color: var(--color-fall-primary);
+    }
+  }
+}

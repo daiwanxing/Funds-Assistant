@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { useFundDetail } from "@/composables/fund/useFundDetail";
-import FundDetailHero from "./FundDetailHero.vue";
-import FundReturnChart from "./FundReturnChart.vue";
-import FundDetailOverviewRail from "./FundDetailOverviewRail.vue";
+import FundDetailHero from "../FundDetailHero";
+import FundReturnChart from "../FundReturnChart";
+import FundDetailOverviewRail from "../FundDetailOverviewRail";
 import { BarChart2 } from "lucide-vue-next";
 
 const props = defineProps<{

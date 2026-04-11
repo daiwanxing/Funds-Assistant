@@ -22,6 +22,28 @@
   若模块过于简单（如单页面模块），也可直接放于 `src/pages/<Module>/HomePage.vue`（但强烈推荐配以 `index.ts` 导出）。
 - **业务组件（Business Components）**：属于该模块专属的领域业务组件，须放置在 `src/pages/<Module>/components/` 目录下。
 
+### 4. 组件文件夹规则
+
+- 只要一个组件不止一个文件，就必须使用“组件同名文件夹”承载。
+- `Vue` 文件、`scss` 文件、局部工具文件、局部 `index.ts` 导出，都必须放在该组件自己的文件夹里。
+- 禁止在同一个特性目录下平铺多个 `Component.vue + Component.scss` 组合。
+
+推荐结构：
+
+```text
+src/pages/Dashboard/components/FundDetail/
+├── FundDetail/
+│   ├── FundDetail.vue
+│   ├── FundDetail.scss
+│   └── index.ts
+├── FundReturnChart/
+│   ├── FundReturnChart.vue
+│   ├── FundReturnChart.scss
+│   ├── fundReturnChartOptions.ts
+│   └── index.ts
+└── index.ts
+```
+
 ```text
 src/
 ├── components/

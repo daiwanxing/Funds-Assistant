@@ -1,1 +1,1 @@
-export { default as GlobalTicker } from "./GlobalTicker.vue";
+export { default as GlobalTicker } from "./GlobalTicker";

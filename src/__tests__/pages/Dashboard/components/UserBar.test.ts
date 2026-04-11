@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, afterEach } from "vitest";
 import { mount } from "@vue/test-utils";
 import { createPinia, setActivePinia } from "pinia";
-import UserBar from "@/pages/Dashboard/components/StatusBar/UserBar.vue";
+import UserBar from "@/pages/Dashboard/components/StatusBar/UserBar";
 
 vi.mock("@/stores/auth", () => ({
   useAuthStore: () => ({

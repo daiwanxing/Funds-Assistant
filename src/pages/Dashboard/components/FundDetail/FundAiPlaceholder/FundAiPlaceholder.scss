@@ -1,0 +1,57 @@
+.fund-ai-placeholder {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  padding: 16px;
+  background: var(--color-surface-panel);
+
+  &__title {
+    flex-shrink: 0;
+    margin-bottom: 12px;
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+  }
+
+  &__body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+  }
+
+  &__icon-shell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.03);
+  }
+
+  &__icon {
+    width: 18px;
+    height: 18px;
+    color: rgba(255, 255, 255, 0.2);
+  }
+
+  &__copy {
+    text-align: center;
+  }
+
+  &__headline {
+    color: rgba(255, 255, 255, 0.35);
+    font-size: 12px;
+  }
+
+  &__caption {
+    margin-top: 2px;
+    color: rgba(255, 255, 255, 0.2);
+    font-size: 10px;
+  }
+}

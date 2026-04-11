@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { mount } from "@vue/test-utils";
-import FundSavedList from "@/pages/Dashboard/components/FundSavedList.vue";
+import FundSavedList from "@/pages/Dashboard/components/FundSavedList";
 import type { FundItem } from "@/types/fund";
 
 const createFundItem = (fundcode: string): FundItem => ({

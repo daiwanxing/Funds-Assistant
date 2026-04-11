@@ -11,9 +11,9 @@ import { UserBar } from "./components/StatusBar";
 import { FundDetail } from "./components/FundDetail";
 import GuestImportDialog from "./components/Auth/GuestImportDialog.vue";
 import { AuthDialog } from "@/components/biz/AuthDialog";
-import WatchlistHeader from "./components/WatchlistHeader.vue";
-import FundSavedList from "./components/FundSavedList.vue";
-import FundSearchList from "./components/FundSearchList.vue";
+import WatchlistHeader from "./components/WatchlistHeader";
+import FundSavedList from "./components/FundSavedList";
+import FundSearchList from "./components/FundSearchList";
 import { useFundSearch } from "@/composables/fund/useFundSearch";
 
 const preferences = usePreferences();
