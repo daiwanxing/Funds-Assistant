@@ -1,5 +1,19 @@
-import { describe, expect, it } from "vitest";
-import { _parseFundProfileHtml, _parseFundTradeStatusHtml, _parsePingzhongdata } from "@/api/fundDetail";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import { http } from "@/api/http";
+import {
+  _parseFundProfileHtml,
+  _parseFundTradeStatusHtml,
+  _parsePingzhongdata,
+  fetchFundDetail,
+} from "@/api/fundDetail";
+
+vi.mock("@/api/http", () => ({
+  http: {
+    get: vi.fn(),
+  },
+}));
+
+const mockedHttpGet = vi.mocked(http.get);
 
 const MOCK_PINGZHONGDATA = `
 var fS_name = "易方达蓝筹精选混合";
@@ -28,6 +42,10 @@ const MOCK_TRADE_STATUS_HTML = `
 `;
 
 describe("parsePingzhongdata", () => {
+  beforeEach(() => {
+    mockedHttpGet.mockReset();
+  });
+
   it("extracts profile fields correctly", () => {
     const result = _parsePingzhongdata(MOCK_PINGZHONGDATA);
     expect(result).not.toBeNull();
@@ -104,5 +122,45 @@ var Data_ACWorthTrend = [];
     expect(result!.profile.accumulatedNav).toBeNull();
     expect(result!.acWorthTrend).toEqual([]);
     expect(result!.stockCodes).toEqual([]);
+  });
+
+  it("keeps detail requests silent by default", async () => {
+    mockedHttpGet
+      .mockResolvedValueOnce({ data: MOCK_PINGZHONGDATA })
+      .mockResolvedValueOnce({ data: MOCK_PROFILE_HTML })
+      .mockResolvedValueOnce({ data: MOCK_TRADE_STATUS_HTML });
+
+    await fetchFundDetail("005827");
+
+    expect(mockedHttpGet).toHaveBeenNthCalledWith(
+      1,
+      expect.stringContaining("/api/pingzhongdata/005827.js"),
+      { responseType: "text", suppressToast: true },
+    );
+    expect(mockedHttpGet).toHaveBeenNthCalledWith(
+      2,
+      "/api/fundf10/jbgk_005827.html",
+      { responseType: "text", suppressToast: true },
+    );
+    expect(mockedHttpGet).toHaveBeenNthCalledWith(
+      3,
+      expect.stringContaining("/api/fundpage/005827.html"),
+      { responseType: "text", suppressToast: true },
+    );
+  });
+
+  it("uses a non-silent request when explicitly retried", async () => {
+    mockedHttpGet
+      .mockResolvedValueOnce({ data: MOCK_PINGZHONGDATA })
+      .mockResolvedValueOnce({ data: MOCK_PROFILE_HTML })
+      .mockResolvedValueOnce({ data: MOCK_TRADE_STATUS_HTML });
+
+    await fetchFundDetail("005827", { suppressToast: false });
+
+    expect(mockedHttpGet).toHaveBeenNthCalledWith(
+      1,
+      expect.stringContaining("/api/pingzhongdata/005827.js"),
+      { responseType: "text", suppressToast: false },
+    );
   });
 });

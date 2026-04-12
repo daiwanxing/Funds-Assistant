@@ -20,6 +20,7 @@ const {
   setPeriod,
   isLoading,
   isError,
+  retry,
 } = useFundDetail(() => props.code);
 </script>
 
@@ -93,6 +94,14 @@ const {
       <p class="fund-detail__error-description">
         数据源暂时不可用，请稍后重试
       </p>
+      <button
+        data-test="fund-detail-retry"
+        type="button"
+        class="fund-detail__error-action"
+        @click="retry"
+      >
+        重试
+      </button>
     </div>
 
     <div

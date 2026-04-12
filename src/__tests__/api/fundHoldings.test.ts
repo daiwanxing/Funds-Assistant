@@ -1,5 +1,20 @@
-import { describe, expect, it } from "vitest";
-import { _extractIndustryContent, _parseHoldingsHtml, _parseIndustryHtml } from "@/api/fundHoldings";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import { http } from "@/api/http";
+import {
+  _extractIndustryContent,
+  _parseHoldingsHtml,
+  _parseIndustryHtml,
+  fetchFundHoldings,
+  fetchFundIndustry,
+} from "@/api/fundHoldings";
+
+vi.mock("@/api/http", () => ({
+  http: {
+    get: vi.fn(),
+  },
+}));
+
+const mockedHttpGet = vi.mocked(http.get);
 
 const MOCK_HTML = `
 <div class='box'><div class='boxitem w790'>
@@ -32,6 +47,10 @@ var apidata={ content:"<div class='box'><div class='boxitem w790'><h4 class='t'>
 `;
 
 describe("parseHoldingsHtml", () => {
+  beforeEach(() => {
+    mockedHttpGet.mockReset();
+  });
+
   it("extracts quarter and cutoff date", () => {
     const result = _parseHoldingsHtml(MOCK_HTML);
     expect(result).not.toBeNull();
@@ -112,5 +131,33 @@ describe("parseHoldingsHtml", () => {
         marketValue: 6664.26,
       },
     ]);
+  });
+
+  it("keeps holdings requests silent by default", async () => {
+    mockedHttpGet.mockResolvedValueOnce({ data: MOCK_HTML });
+
+    await fetchFundHoldings("005827");
+
+    expect(mockedHttpGet).toHaveBeenCalledWith(
+      "/api/fundf10/FundArchivesDatas.aspx",
+      expect.objectContaining({
+        responseType: "text",
+        suppressToast: true,
+      }),
+    );
+  });
+
+  it("keeps industry requests silent by default", async () => {
+    mockedHttpGet.mockResolvedValueOnce({ data: MOCK_INDUSTRY_RESPONSE });
+
+    await fetchFundIndustry("561380");
+
+    expect(mockedHttpGet).toHaveBeenCalledWith(
+      "/api/fundf10/F10DataApi.aspx",
+      expect.objectContaining({
+        responseType: "text",
+        suppressToast: true,
+      }),
+    );
   });
 });

@@ -67,6 +67,7 @@ const calcPeriodReturn = (points: ACWorthPoint[]): number | null => {
 
 export const useFundDetail = (code: MaybeRefOrGetter<string | null>) => {
   const period = ref<FundReturnPeriod>("6m");
+  const nextSuppressToast = ref(true);
 
   const queryKey = computed(() => ["fundDetail", toValue(code)] as const);
   const enabled = computed(() => {
@@ -74,13 +75,15 @@ export const useFundDetail = (code: MaybeRefOrGetter<string | null>) => {
     return c !== null && c.trim().length > 0;
   });
 
-  const { data, isPending, isError, error } = useQuery({
+  const { data, isPending, isError, error, refetch } = useQuery({
     queryKey,
     enabled,
     queryFn: async () => {
       const c = toValue(code);
       if (!c) return null;
-      return fetchFundDetail(c);
+      const suppressToast = nextSuppressToast.value;
+      nextSuppressToast.value = true;
+      return fetchFundDetail(c, { suppressToast });
     },
     staleTime: 5 * 60 * 1000,
     retry: 1,
@@ -112,6 +115,11 @@ export const useFundDetail = (code: MaybeRefOrGetter<string | null>) => {
     period.value = p;
   };
 
+  const retry = async () => {
+    nextSuppressToast.value = false;
+    await refetch();
+  };
+
   return {
     detail,
     profile,
@@ -127,6 +135,7 @@ export const useFundDetail = (code: MaybeRefOrGetter<string | null>) => {
     isLoading: isPending,
     isError,
     error,
+    retry,
   };
 };
 

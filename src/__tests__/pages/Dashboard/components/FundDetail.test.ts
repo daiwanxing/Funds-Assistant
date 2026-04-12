@@ -39,6 +39,7 @@ const detailState = {
   setPeriod: vi.fn(),
   isLoading: ref(false),
   isError: ref(false),
+  retry: vi.fn(),
 };
 
 vi.mock("@/composables/fund/useFundDetail", () => ({
@@ -60,6 +61,7 @@ describe("FundDetail", () => {
     detailState.period.value = "6m";
     detailState.isLoading.value = false;
     detailState.isError.value = false;
+    detailState.retry.mockReset();
   });
 
   it("renders the overview rail below the chart area", () => {
@@ -95,5 +97,21 @@ describe("FundDetail", () => {
     expect(wrapper.text()).not.toContain("基金概况");
     expect(wrapper.text()).not.toContain("行业配置");
     expect(wrapper.text()).not.toContain("基金公司");
+  });
+
+  it("renders a retry action when the detail request fails", async () => {
+    detailState.profile.value = null;
+    detailState.isError.value = true;
+
+    const wrapper = mount(FundDetail, {
+      props: {
+        code: "110020",
+      },
+    });
+
+    await wrapper.get("[data-test='fund-detail-retry']").trigger("click");
+
+    expect(wrapper.text()).toContain("重试");
+    expect(detailState.retry).toHaveBeenCalledTimes(1);
   });
 });

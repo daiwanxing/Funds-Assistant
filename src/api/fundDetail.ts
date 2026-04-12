@@ -1,5 +1,12 @@
-import axios from "axios";
+import type { AxiosRequestConfig } from "axios";
+import { http } from "./http";
 import type { ACWorthPoint, FundDetailData, FundProfile } from "@/types/fund";
+
+interface RequestOptions {
+  suppressToast?: boolean;
+}
+
+type HttpRequestConfig = AxiosRequestConfig & RequestOptions;
 
 /**
  * 从 pingzhongdata JS 文本中提取变量值。
@@ -165,20 +172,27 @@ const parsePingzhongdata = (text: string): FundDetailData | null => {
  *
  * 请求层只做数据获取与映射，不做 Vue 状态与副作用。
  */
-export const fetchFundDetail = async (code: string): Promise<FundDetailData | null> => {
+export const fetchFundDetail = async (
+  code: string,
+  options: RequestOptions = {},
+): Promise<FundDetailData | null> => {
   try {
+    const requestConfig: HttpRequestConfig = {
+      responseType: "text",
+      suppressToast: options.suppressToast ?? true,
+    };
     const [detailResponse, profileResponse, homeResponse] = await Promise.all([
-      axios.get<string>(
+      http.get<string>(
         `/api/pingzhongdata/${code}.js?v=${Date.now()}`,
-        { responseType: "text" },
+        requestConfig,
       ),
-      axios.get<string>(
+      http.get<string>(
         `/api/fundf10/jbgk_${code}.html`,
-        { responseType: "text" },
+        requestConfig,
       ),
-      axios.get<string>(
+      http.get<string>(
         `/api/fundpage/${code}.html?v=${Date.now()}`,
-        { responseType: "text" },
+        requestConfig,
       ),
     ]);
 

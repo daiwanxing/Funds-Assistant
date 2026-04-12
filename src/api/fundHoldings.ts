@@ -1,10 +1,17 @@
-import axios from "axios";
+import type { AxiosRequestConfig } from "axios";
+import { http } from "./http";
 import type {
   FundHoldingItem,
   FundHoldingsSnapshot,
   FundIndustryItem,
   FundIndustrySnapshot,
 } from "@/types/fund";
+
+interface RequestOptions {
+  suppressToast?: boolean;
+}
+
+type HttpRequestConfig = AxiosRequestConfig & RequestOptions;
 
 const stripHtml = (value: string): string => value.replace(/<[^>]+>/g, "").replace(/&nbsp;/g, " ").trim();
 
@@ -121,14 +128,17 @@ const parseIndustryHtml = (html: string): FundIndustrySnapshot | null => {
 export const fetchFundHoldings = async (
   code: string,
   topline = 10,
+  options: RequestOptions = {},
 ): Promise<FundHoldingsSnapshot | null> => {
   try {
-    const { data } = await axios.get<string>(
+    const requestConfig: HttpRequestConfig = {
+      params: { type: "jjcc", code, topline, year: "", month: "", rt: Math.random() },
+      responseType: "text",
+      suppressToast: options.suppressToast ?? true,
+    };
+    const { data } = await http.get<string>(
       `/api/fundf10/FundArchivesDatas.aspx`,
-      {
-        params: { type: "jjcc", code, topline, year: "", month: "", rt: Math.random() },
-        responseType: "text",
-      },
+      requestConfig,
     );
     return parseHoldingsHtml(data);
   } catch {
@@ -139,14 +149,17 @@ export const fetchFundHoldings = async (
 export const fetchFundIndustry = async (
   code: string,
   topline = 10,
+  options: RequestOptions = {},
 ): Promise<FundIndustrySnapshot | null> => {
   try {
-    const { data } = await axios.get<string>(
+    const requestConfig: HttpRequestConfig = {
+      params: { type: "hypz", code, topline, year: "", month: "", rt: Math.random() },
+      responseType: "text",
+      suppressToast: options.suppressToast ?? true,
+    };
+    const { data } = await http.get<string>(
       `/api/fundf10/F10DataApi.aspx`,
-      {
-        params: { type: "hypz", code, topline, year: "", month: "", rt: Math.random() },
-        responseType: "text",
-      },
+      requestConfig,
     );
 
     const content = extractIndustryContent(data);

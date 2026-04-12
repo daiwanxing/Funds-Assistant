@@ -1,23 +1,26 @@
-import { computed, type MaybeRefOrGetter, toValue } from "vue";
+import { computed, ref, type MaybeRefOrGetter, toValue } from "vue";
 import { useQuery } from "@tanstack/vue-query";
 import { fetchFundHoldings, fetchFundIndustry } from "@/api/fundHoldings";
 
 export const useFundHoldings = (code: MaybeRefOrGetter<string | null>) => {
   const queryKey = computed(() => ["fundHoldings", toValue(code)] as const);
+  const nextSuppressToast = ref(true);
   const enabled = computed(() => {
     const c = toValue(code);
     return c !== null && c.trim().length > 0;
   });
 
-  const { data, isPending, isError } = useQuery({
+  const { data, isPending, isError, refetch } = useQuery({
     queryKey,
     enabled,
     queryFn: async () => {
       const c = toValue(code);
       if (!c) return null;
+      const suppressToast = nextSuppressToast.value;
+      nextSuppressToast.value = true;
       const [holdings, industry] = await Promise.all([
-        fetchFundHoldings(c),
-        fetchFundIndustry(c),
+        fetchFundHoldings(c, 10, { suppressToast }),
+        fetchFundIndustry(c, 10, { suppressToast }),
       ]);
       return { holdings, industry };
     },
@@ -37,6 +40,11 @@ export const useFundHoldings = (code: MaybeRefOrGetter<string | null>) => {
     return Math.max(...list.map((h) => h.ratio));
   });
 
+  const retry = async () => {
+    nextSuppressToast.value = false;
+    await refetch();
+  };
+
   return {
     snapshot,
     industrySnapshot,
@@ -47,5 +55,6 @@ export const useFundHoldings = (code: MaybeRefOrGetter<string | null>) => {
     maxRatio,
     isLoading: isPending,
     isError,
+    retry,
   };
 };
