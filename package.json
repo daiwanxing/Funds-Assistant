@@ -38,7 +38,7 @@
     "motion-v": "^2.2.0",
     "pinia": "^3.0.4",
     "vue": "^3.5.0",
-    "vue-router": "^4.5.0",
+    "vue-router": "^5.0.4",
     "zod": "^4.3.6"
   },
   "devDependencies": {
