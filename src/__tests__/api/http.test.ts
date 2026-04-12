@@ -69,10 +69,16 @@ describe("http response interceptor", () => {
     expect(toast.error).toHaveBeenCalledWith("邮箱已注册，请直接登录");
   });
 
-  it("does NOT show a toast for unregistered error codes (e.g. 500)", async () => {
+  it("shows a toast for unregistered error codes using the server error message", async () => {
     const err = makeAxiosError(500, "Internal server error");
     await expect(onRejected(err)).rejects.toEqual(err);
-    expect(toast.error).not.toHaveBeenCalled();
+    expect(toast.error).toHaveBeenCalledWith("Internal server error");
+  });
+
+  it("falls back to the generic message for unregistered error codes without a server message", async () => {
+    const err = makeAxiosError(500);
+    await expect(onRejected(err)).rejects.toEqual(err);
+    expect(toast.error).toHaveBeenCalledWith("请求失败，请稍后重试");
   });
 
   it("skips the toast when suppressToast is true on the request config", async () => {
@@ -86,9 +92,9 @@ describe("http response interceptor", () => {
     await expect(onRejected(err)).rejects.toEqual(err);
   });
 
-  it("does NOT call toast for errors without a response (network timeout, etc.)", async () => {
+  it("shows a generic network toast for errors without a response", async () => {
     const networkError = { config: {}, message: "Network Error" };
     await expect(onRejected(networkError)).rejects.toEqual(networkError);
-    expect(toast.error).not.toHaveBeenCalled();
+    expect(toast.error).toHaveBeenCalledWith("网络异常，请稍后重试");
   });
 });

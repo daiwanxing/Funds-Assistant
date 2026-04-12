@@ -10,6 +10,9 @@ const STATUS_MESSAGES: Record<number, string> = {
   409: "邮箱已注册，请直接登录",
 };
 
+const DEFAULT_ERROR_MESSAGE = "请求失败，请稍后重试";
+const NETWORK_ERROR_MESSAGE = "网络异常，请稍后重试";
+
 /**
  * 全局唯一的 HTTP 客户端实例。
  *
@@ -27,14 +30,18 @@ http.interceptors.response.use(
     const axiosError = error as {
       config?: { suppressToast?: boolean };
       response?: { status?: number; data?: { error?: { message?: string } } };
+      message?: string;
     };
 
     const status = axiosError.response?.status;
     const serverMessage = axiosError.response?.data?.error?.message;
     const suppressToast = axiosError.config?.suppressToast === true;
+    const fallbackMessage = status !== undefined
+      ? (STATUS_MESSAGES[status] ?? serverMessage ?? DEFAULT_ERROR_MESSAGE)
+      : NETWORK_ERROR_MESSAGE;
 
-    if (!suppressToast && status !== undefined && status in STATUS_MESSAGES) {
-      toast.error(serverMessage ?? STATUS_MESSAGES[status]!);
+    if (!suppressToast) {
+      toast.error(serverMessage ?? fallbackMessage);
     }
 
     return Promise.reject(error);
