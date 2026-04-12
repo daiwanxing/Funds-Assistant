@@ -62,7 +62,7 @@ src/
         └── components/   ← 仅供控制台使用的业务组件
             ├── GlobalTicker/
             ├── StatusBar/
-            └── FundTable/
+            └── FundDetail/
 ```
 
 ## 路径别名

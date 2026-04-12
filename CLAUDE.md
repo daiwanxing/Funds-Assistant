@@ -61,7 +61,9 @@ pnpm test:run     # 运行测试
 | 想了解… | 去哪里找 |
 |---|---|
 | 组件如何命名、放在哪个目录 | `.rules/COMPONENT_NAMING.md` · `.rules/COMPONENT_ARCHITECTURE.md` |
+| 单元测试保留与删除标准 | `.rules/TESTING.md` |
 | 类型定义如何组织、放在哪里 | `.rules/TYPE_MANAGEMENT.md` |
+| 当前项目架构总览 | `docs/architecture.md` |
 | ESLint 规则与约束 | `.rules/LINT.md` |
 | 设计令牌、样式约定 | `src/styles/tokens.css` · `uno.config.ts` |
 | API 数据获取与缓存策略 | `src/composables/fund/useFundData.ts` |
@@ -116,9 +118,7 @@ src/
 │   └── Dashboard/              # 主面板页面
 │       ├── HomePage.vue        # 入口页（路由根组件）
 │       └── components/
-│           ├── ActionBar/      # 顶部操作栏（搜索 / 刷新）
 │           ├── Auth/           # GuestImportDialog — 游客导入弹窗
-│           ├── FundTable/      # 自选基金表格
 │           ├── GlobalTicker/   # 全球指数走马灯
 │           ├── StatusBar/      # 底部状态栏（UserBar.vue）
 │           ├── FundSavedList.vue
