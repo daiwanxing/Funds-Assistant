@@ -118,7 +118,7 @@ const confirmLogout = async () => {
     v-model:open="showLogoutDialog"
     hide-header
     size="auto"
-    panel-class="user-bar__dialog-panel"
+    tone="inverse"
   >
     <div class="user-bar__logout-dialog">
       <div class="user-bar__logout-brand">

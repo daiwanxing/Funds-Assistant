@@ -7,11 +7,11 @@ import { X } from "lucide-vue-next";
 import type { DialogProps } from "./types";
 const props = withDefaults(defineProps<DialogProps>(), {
   size: "md",
+  tone: "default",
   title: undefined,
   closeOnBackdropClick: true,
   closeOnEsc: true,
   hideHeader: false,
-  panelClass: "",
 });
 
 const open = defineModel<boolean>("open", { default: false });
@@ -71,8 +71,11 @@ const sizeMap = {
       >
         <motion.div
           key="dialog-panel"
-          class="dialog-panel"
-          :class="[panelClass, { 'dialog-panel--headerless': hideHeader }]"
+          :class="[
+            'dialog-panel',
+            `dialog-panel--${tone}`,
+            { 'dialog-panel--headerless': hideHeader },
+          ]"
           role="dialog"
           aria-modal="true"
           :aria-labelledby="title ? 'dialog-title' : undefined"

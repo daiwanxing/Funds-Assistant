@@ -3,6 +3,11 @@ import { computed } from 'vue';
 import { Search, Plus, Check } from 'lucide-vue-next';
 import type { SearchFundItem } from '@/composables/fund/useFundSearch';
 
+type HighlightSegment = {
+  text: string;
+  matched: boolean;
+};
+
 const props = defineProps<{
   query: string;
   options: SearchFundItem[];
@@ -18,11 +23,25 @@ const addedKeys = computed(() => {
   return new Set(props.addedCodes);
 });
 
-const highlightText = (text: string, query: string) => {
-  if (!query || !text) return text;
+const buildHighlightSegments = (text: string, query: string): HighlightSegment[] => {
+  if (!text) {
+    return [];
+  }
+
+  if (!query) {
+    return [{ text, matched: false }];
+  }
+
   const safeQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   const regex = new RegExp(`(${safeQuery})`, 'gi');
-  return text.replace(regex, '<span class="search-fund-list__match">$1</span>');
+
+  return text
+    .split(regex)
+    .filter(Boolean)
+    .map((segment) => ({
+      text: segment,
+      matched: segment.toLowerCase() === query.toLowerCase(),
+    }));
 };
 
 const handleAdd = (code: string) => {
@@ -222,7 +241,20 @@ const handleAdd = (code: string) => {
             <div class="search-fund-list__identity">
               <div class="search-fund-list__headline">
                 <span class="search-fund-list__name">
-                  <span v-html="highlightText(item.label, query)" />
+                  <template
+                    v-for="(segment, index) in buildHighlightSegments(item.label, query)"
+                    :key="`${item.value}-label-${index}`"
+                  >
+                    <span
+                      v-if="segment.matched"
+                      class="search-fund-list__match"
+                    >
+                      {{ segment.text }}
+                    </span>
+                    <template v-else>
+                      {{ segment.text }}
+                    </template>
+                  </template>
                 </span>
                 <span
                   v-if="item.tag"
@@ -232,7 +264,20 @@ const handleAdd = (code: string) => {
                 </span>
               </div>
               <span class="search-fund-list__description">
-                <span v-html="highlightText(item.desc || '', query)" />
+                <template
+                  v-for="(segment, index) in buildHighlightSegments(item.desc || '', query)"
+                  :key="`${item.value}-desc-${index}`"
+                >
+                  <span
+                    v-if="segment.matched"
+                    class="search-fund-list__match"
+                  >
+                    {{ segment.text }}
+                  </span>
+                  <template v-else>
+                    {{ segment.text }}
+                  </template>
+                </template>
               </span>
             </div>
 

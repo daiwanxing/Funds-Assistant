@@ -199,7 +199,7 @@
     transition: color 160ms ease, opacity 160ms ease;
 
     &--text {
-      color: rgba(255, 255, 255, 0.92);
+      color: rgba(255, 255, 255, 0.72);
     }
 
     .user-bar__guest-button:hover &--text {
@@ -302,12 +302,6 @@
   &__logout-spinner {
     animation: user-bar-spin 1s linear infinite;
   }
-}
-
-:deep(.user-bar__dialog-panel) {
-  overflow: hidden;
-  border-color: rgba(255, 255, 255, 0.1);
-  background: #000;
 }
 
 @keyframes user-bar-gradient-flow {

@@ -247,7 +247,7 @@
     font-size: 12px;
   }
 
-  :deep(.search-fund-list__match) {
+  &__match {
     color: var(--color-brand-primary);
   }
 }
