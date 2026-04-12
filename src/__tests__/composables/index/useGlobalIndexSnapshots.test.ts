@@ -70,6 +70,9 @@ describe("useGlobalIndexSnapshots", () => {
     await flushPromises();
 
     expect(mockedFetchIndexSnapshots).toHaveBeenCalledTimes(1);
+    expect(mockedFetchIndexSnapshots).toHaveBeenCalledWith(expect.any(Array), {
+      suppressToast: true,
+    });
     expect(exposed.dataList.value).toHaveLength(1);
     expect(exposed.dataList.value[0]?.f12).toBe("SPX");
 

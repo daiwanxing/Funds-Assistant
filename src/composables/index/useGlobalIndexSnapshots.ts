@@ -17,7 +17,7 @@ export const useGlobalIndexSnapshots = (
   const query = useQuery({
     queryKey: GLOBAL_INDEX_SNAPSHOT_QUERY_KEY,
     queryFn: async () => {
-      return fetchIndexSnapshots([...GLOBAL_INDICES]);
+      return fetchIndexSnapshots([...GLOBAL_INDICES], { suppressToast: true });
     },
     refetchInterval: computed(() => toValue(options.refetchInterval) ?? false),
     refetchOnWindowFocus: options.refetchOnWindowFocus ?? false,

@@ -1,4 +1,5 @@
-import axios from "axios";
+import type { AxiosRequestConfig } from "axios";
+import { http } from "./http";
 import type {
   GlobalIndexSnapshot,
   GlobalIndicesSnapshotApiResponse,
@@ -10,13 +11,21 @@ import type {
 
 import { INDEX_FIELDS, MARKET_SESSION_CONFIG, type MarketSessionConfig, type TradingWindow } from "@/constants";
 
+interface RequestOptions {
+  suppressToast?: boolean;
+}
+
+type HttpRequestConfig = AxiosRequestConfig & RequestOptions;
+
 export const fetchIndexSnapshots = async (
   secids: string[],
+  options: RequestOptions = {},
 ): Promise<GlobalIndexSnapshot[]> => {
   if (secids.length === 0) return [];
 
   const url = `/api/index/api/qt/ulist.np/get?fltt=2&fields=${INDEX_FIELDS}&secids=${secids.join(",")}&_=${Date.now()}`;
-  const { data } = await axios.get<GlobalIndicesSnapshotApiResponse>(url);
+  const requestConfig: HttpRequestConfig = { suppressToast: options.suppressToast };
+  const { data } = await http.get<GlobalIndicesSnapshotApiResponse>(url, requestConfig);
   return data?.data?.diff ?? [];
 };
 
@@ -154,6 +163,7 @@ const isIntradaySession = (
 
 export const fetchIndexTrends = async (
   secids: string[],
+  options: RequestOptions = {},
 ): Promise<GlobalIndexTrendItem[]> => {
   const responses = await Promise.all(
     secids.map(async (code) => {
@@ -162,7 +172,8 @@ export const fetchIndexTrends = async (
       let data: GlobalIndexTrendApiResponse | undefined;
 
       try {
-        const response = await axios.get<GlobalIndexTrendApiResponse>(url);
+        const requestConfig: HttpRequestConfig = { suppressToast: options.suppressToast };
+        const response = await http.get<GlobalIndexTrendApiResponse>(url, requestConfig);
         data = response.data;
       } catch {
         return createEmptyTrendItem(code, config);
@@ -223,6 +234,7 @@ export const fetchIndexTrends = async (
 
 export const fetchCustomIndices = async (
   secids: string[],
+  options: RequestOptions = {},
 ): Promise<IndexItem[]> => {
-  return (await fetchIndexSnapshots(secids)) as IndexItem[];
+  return (await fetchIndexSnapshots(secids, options)) as IndexItem[];
 };

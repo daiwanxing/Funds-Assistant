@@ -1,4 +1,5 @@
-import axios from "axios";
+import axios, { type AxiosRequestConfig } from "axios";
+import { http } from "./http";
 import type {
   FundQuoteApiResponse,
   FundQuoteResponseItem,
@@ -12,6 +13,12 @@ interface FundEstimateResponseItem {
   gszzl?: string;
   gztime?: string;
 }
+
+interface RequestOptions {
+  suppressToast?: boolean;
+}
+
+type HttpRequestConfig = AxiosRequestConfig & RequestOptions;
 
 const parseFundEstimateResponse = (
   payload: string,
@@ -55,19 +62,21 @@ export const searchFunds = async (
   keyword: string,
 ): Promise<FundSearchResponseItem[]> => {
   const searchUrl = `/api/search/FundSearch/api/FundSearchAPI.ashx?&m=9&key=${encodeURIComponent(keyword)}&_=${Date.now()}`;
-  const { data } = await axios.get<FundSearchApiResponse>(searchUrl);
+  const { data } = await http.get<FundSearchApiResponse>(searchUrl);
   return data.Datas ?? [];
 };
 
 export const fetchFundQuotes = async (
   codes: string[],
   deviceId: string,
+  options: RequestOptions = {},
 ): Promise<FundQuoteResponseItem[]> => {
   if (codes.length === 0) return [];
 
   const url =
     `/api/fund/FundMNewApi/FundMNFInfo?pageIndex=1&pageSize=${Math.max(codes.length, 20)}&plat=Android&appType=ttjj&product=EFund&Version=1&deviceid=${deviceId}&Fcodes=${codes.join(",")}`;
-  const { data } = await axios.get<FundQuoteApiResponse>(url);
+  const requestConfig: HttpRequestConfig = { suppressToast: options.suppressToast };
+  const { data } = await http.get<FundQuoteApiResponse>(url, requestConfig);
   const quotes = data.Datas ?? [];
   const missingEstimateCodes = quotes
     .filter((item) => !hasPrimaryRealtimeQuote(item))

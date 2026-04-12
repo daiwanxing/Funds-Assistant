@@ -1,18 +1,18 @@
 import { beforeEach, describe, expect, it, vi, afterEach } from "vitest";
-import axios from "axios";
 import { fetchIndexTrends } from "@/api/index";
+import { http } from "@/api/http";
 
-vi.mock("axios", () => ({
-  default: {
+vi.mock("@/api/http", () => ({
+  http: {
     get: vi.fn(),
   },
 }));
 
-const mockedAxiosGet = vi.mocked(axios.get);
+const mockedHttpGet = vi.mocked(http.get);
 
 describe("fetchIndexTrends", () => {
   beforeEach(() => {
-    mockedAxiosGet.mockReset();
+    mockedHttpGet.mockReset();
     vi.useFakeTimers();
   });
 
@@ -22,7 +22,7 @@ describe("fetchIndexTrends", () => {
 
   it("uses only current session points after the A-share market opens", async () => {
     vi.setSystemTime(new Date("2026-03-30T09:48:00+08:00"));
-    mockedAxiosGet.mockResolvedValueOnce({
+    mockedHttpGet.mockResolvedValueOnce({
       data: {
         data: {
           prePrice: 3913.72,
@@ -51,17 +51,19 @@ describe("fetchIndexTrends", () => {
       },
     ]);
 
-    expect(mockedAxiosGet).toHaveBeenCalledWith(
+    expect(mockedHttpGet).toHaveBeenCalledWith(
       expect.stringContaining("/api/index/api/qt/stock/trends2/get?secid=1.000001"),
+      { suppressToast: undefined },
     );
-    expect(mockedAxiosGet).toHaveBeenCalledWith(
+    expect(mockedHttpGet).toHaveBeenCalledWith(
       expect.stringContaining("ndays=2"),
+      { suppressToast: undefined },
     );
   });
 
   it("keeps the full current trading day after the A-share market closes", async () => {
     vi.setSystemTime(new Date("2026-03-30T16:00:00+08:00"));
-    mockedAxiosGet.mockResolvedValueOnce({
+    mockedHttpGet.mockResolvedValueOnce({
       data: {
         data: {
           prePrice: 3913.72,
@@ -94,7 +96,7 @@ describe("fetchIndexTrends", () => {
 
   it("falls back to the previous trading day before the A-share market opens", async () => {
     vi.setSystemTime(new Date("2026-03-30T09:20:00+08:00"));
-    mockedAxiosGet.mockResolvedValueOnce({
+    mockedHttpGet.mockResolvedValueOnce({
       data: {
         data: {
           prePrice: 3913.72,
@@ -129,7 +131,7 @@ describe("fetchIndexTrends", () => {
 
   it("uses the current U.S. session with cross-midnight Beijing timestamps", async () => {
     vi.setSystemTime(new Date("2026-03-28T03:00:00+08:00"));
-    mockedAxiosGet.mockResolvedValueOnce({
+    mockedHttpGet.mockResolvedValueOnce({
       data: {
         data: {
           prePrice: 21000,
@@ -160,7 +162,7 @@ describe("fetchIndexTrends", () => {
 
   it("keeps successful trend payloads when one index request fails", async () => {
     vi.setSystemTime(new Date("2026-03-30T09:48:00+08:00"));
-    mockedAxiosGet
+    mockedHttpGet
       .mockRejectedValueOnce(new Error("upstream failed"))
       .mockResolvedValueOnce({
         data: {

@@ -1,4 +1,4 @@
-import { computed, type ComputedRef, type Ref } from "vue";
+import { computed, ref, type ComputedRef, type Ref } from "vue";
 import { useQuery, useQueryClient } from "@tanstack/vue-query";
 import { resolveFundQuote } from "./quote";
 import { usePreferences } from "@/composables/preferences";
@@ -79,6 +79,7 @@ export const useFundData = (
     );
   });
   const queryKey = computed(() => ["fundData", watchlistCodes.value, userId.value.trim()]);
+  const nextSuppressToast = ref(true);
 
   const persistWatchlist = (watchlist: FundListItem[]): void => {
     void options.persistWatchlist?.(
@@ -94,9 +95,12 @@ export const useFundData = (
     queryKey,
     enabled: queryEnabled,
     queryFn: async () => {
+      const suppressToast = nextSuppressToast.value;
+      nextSuppressToast.value = true;
       const rawData = await fetchFundQuotes(
         fundListM.value.map((item) => item.code),
         userId.value,
+        { suppressToast },
       );
       const list: FundItem[] = [];
 
@@ -170,7 +174,8 @@ export const useFundData = (
 
 
 
-  const fetchData = async (): Promise<void> => {
+  const fetchData = async (options: { suppressToast?: boolean } = {}): Promise<void> => {
+    nextSuppressToast.value = options.suppressToast ?? false;
     await fundListQuery.refetch();
   };
 
@@ -183,7 +188,7 @@ export const useFundData = (
     });
     if (!changed) return;
     persistWatchlist(fundListM.value);
-    void fetchData();
+    void fetchData({ suppressToast: false });
   };
 
   const deleteFund = (id: string): void => {

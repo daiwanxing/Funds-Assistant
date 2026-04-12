@@ -244,6 +244,46 @@ describe("useFundData", () => {
     expect(mockedFetchFundQuotes).toHaveBeenLastCalledWith(
       ["005827"],
       "test-user",
+      { suppressToast: true },
+    );
+
+    wrapper.unmount();
+    queryClient.clear();
+  });
+
+  it("keeps the initial dashboard quote query silent", async () => {
+    mockedFetchFundQuotes.mockResolvedValueOnce(fundQuoteResponse.data.Datas);
+
+    const { wrapper, queryClient } = mountUseFundData();
+
+    await flushPromises();
+
+    expect(mockedFetchFundQuotes).toHaveBeenCalledWith(
+      ["005827"],
+      "test-user",
+      { suppressToast: true },
+    );
+
+    wrapper.unmount();
+    queryClient.clear();
+  });
+
+  it("uses a non-silent request when the user manually refreshes quotes", async () => {
+    mockedFetchFundQuotes
+      .mockResolvedValueOnce(fundQuoteResponse.data.Datas)
+      .mockResolvedValueOnce(fundQuoteResponse.data.Datas);
+
+    const { exposed, wrapper, queryClient } = mountUseFundData();
+
+    await flushPromises();
+    await exposed.fetchData();
+    await flushPromises();
+
+    expect(mockedFetchFundQuotes).toHaveBeenNthCalledWith(
+      2,
+      ["005827"],
+      "test-user",
+      { suppressToast: false },
     );
 
     wrapper.unmount();

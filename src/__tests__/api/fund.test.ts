@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import axios from "axios";
 import { fetchFundQuotes } from "@/api/fund";
+import { http } from "@/api/http";
 
 vi.mock("axios", () => ({
   default: {
@@ -8,11 +9,19 @@ vi.mock("axios", () => ({
   },
 }));
 
+vi.mock("@/api/http", () => ({
+  http: {
+    get: vi.fn(),
+  },
+}));
+
 const mockedAxiosGet = vi.mocked(axios.get);
+const mockedHttpGet = vi.mocked(http.get);
 
 describe("fetchFundQuotes", () => {
   beforeEach(() => {
     mockedAxiosGet.mockReset();
+    mockedHttpGet.mockReset();
   });
 
   it("returns an empty list when no fund codes are requested", async () => {
@@ -21,7 +30,7 @@ describe("fetchFundQuotes", () => {
   });
 
   it("hydrates missing realtime estimate fields from the fundgz endpoint", async () => {
-    mockedAxiosGet
+    mockedHttpGet
       .mockResolvedValueOnce({
         data: {
           Datas: [
@@ -40,7 +49,8 @@ describe("fetchFundQuotes", () => {
             },
           ],
         },
-      })
+      });
+    mockedAxiosGet
       .mockResolvedValueOnce({
         data: 'jsonpgz({"fundcode":"000216","name":"华安黄金ETF联接A","jzrq":"2026-03-27","dwjz":"3.4490","gsz":"3.4667","gszzl":"0.51","gztime":"2026-03-30 10:00"});',
       });
@@ -54,19 +64,20 @@ describe("fetchFundQuotes", () => {
       }),
     ]);
 
-    expect(mockedAxiosGet).toHaveBeenNthCalledWith(
+    expect(mockedHttpGet).toHaveBeenNthCalledWith(
       1,
       expect.stringContaining("/api/fund/FundMNewApi/FundMNFInfo?"),
+      { suppressToast: undefined },
     );
     expect(mockedAxiosGet).toHaveBeenNthCalledWith(
-      2,
+      1,
       expect.stringMatching(/\/api\/fundgz\/js\/000216\.js\?rt=\d+/),
       { responseType: "text" },
     );
   });
 
   it("does not request fundgz when the primary quote already includes exchange realtime data", async () => {
-    mockedAxiosGet.mockResolvedValueOnce({
+    mockedHttpGet.mockResolvedValueOnce({
       data: {
         Datas: [
           {
@@ -88,6 +99,7 @@ describe("fetchFundQuotes", () => {
 
     await fetchFundQuotes(["560580"], "device-id");
 
-    expect(mockedAxiosGet).toHaveBeenCalledTimes(1);
+    expect(mockedHttpGet).toHaveBeenCalledTimes(1);
+    expect(mockedAxiosGet).not.toHaveBeenCalled();
   });
 });

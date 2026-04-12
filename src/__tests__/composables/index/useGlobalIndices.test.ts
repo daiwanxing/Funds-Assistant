@@ -87,6 +87,10 @@ describe("useGlobalIndices", () => {
     const { exposed, wrapper, queryClient } = mountUseGlobalIndices();
     await flushPromises();
 
+    expect(mockedFetchIndexTrends).toHaveBeenCalledWith(expect.any(Array), {
+      suppressToast: true,
+    });
+
     expect(exposed.dataList.value).toEqual([
       expect.objectContaining({
         f12: "SPX",

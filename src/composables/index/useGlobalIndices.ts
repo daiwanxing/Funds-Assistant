@@ -33,7 +33,7 @@ export const useGlobalIndices = () => {
   const trendsQuery = useQuery({
     queryKey: GLOBAL_INDEX_TRENDS_QUERY_KEY,
     queryFn: async () => {
-      return fetchIndexTrends([...GLOBAL_INDICES]);
+      return fetchIndexTrends([...GLOBAL_INDICES], { suppressToast: true });
     },
     refetchInterval: computed(() => (
       preferences.isLiveUpdate.value && isDuringDate() && !preferences.isEdit.value
