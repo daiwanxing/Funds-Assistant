@@ -96,10 +96,7 @@ const confirmLogout = async () => {
       class="user-bar__guest-button"
       @click="emit('login')"
     >
-      <div
-        class="user-bar__guest-flow"
-        style="mask-image: linear-gradient(to right, black 40%, transparent 100%); -webkit-mask-image: linear-gradient(to right, black 40%, transparent 100%);"
-      />
+      <div class="user-bar__guest-flow" />
 
       <div class="user-bar__guest-glow" />
       <div class="user-bar__guest-line" />
@@ -121,7 +118,7 @@ const confirmLogout = async () => {
     v-model:open="showLogoutDialog"
     hide-header
     size="auto"
-    panel-class="!bg-black !border !border-white/10 overflow-hidden"
+    panel-class="user-bar__dialog-panel"
   >
     <div class="user-bar__logout-dialog">
       <div class="user-bar__logout-brand">

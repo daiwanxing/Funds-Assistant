@@ -24,8 +24,10 @@ const handleSuccess = () => {
 
 <template>
   <AuthLayout>
-    <div class="w-full max-w-[400px] bg-transparent py-10">
+    <div class="sign-in-page">
       <AuthForm @success="handleSuccess" />
     </div>
   </AuthLayout>
 </template>
+
+<style scoped lang="scss" src="./SignInPage.scss"></style>

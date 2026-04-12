@@ -1,0 +1,131 @@
+.guest-import-dialog {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+
+  &__card {
+    position: relative;
+    width: 100%;
+    max-width: 380px;
+    margin: 24px;
+    padding: 28px 24px 24px;
+    border: 1px solid var(--border-default);
+    border-radius: 14px;
+    background: var(--bg-2);
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+  }
+
+  &__close-button {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--text-tertiary);
+    cursor: pointer;
+    transition: color 0.2s, background 0.2s;
+
+    &:hover {
+      color: var(--text-secondary);
+      background: var(--bg-4);
+    }
+  }
+
+  &__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    margin-bottom: 16px;
+    border-radius: 14px;
+    background: var(--accent-soft-bg);
+    color: var(--accent-primary);
+  }
+
+  &__title {
+    margin: 0 0 10px;
+    color: var(--text-primary);
+    font-size: 17px;
+    font-weight: 600;
+  }
+
+  &__message {
+    margin: 0 0 24px;
+    color: var(--text-secondary);
+    font-size: 13px;
+    line-height: 1.6;
+
+    strong {
+      color: var(--accent-primary);
+      font-weight: 600;
+    }
+  }
+
+  &__actions {
+    display: flex;
+    gap: 10px;
+  }
+
+  &__action-button {
+    flex: 1;
+    height: 38px;
+    border: 0;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s, opacity 0.2s;
+
+    &--secondary {
+      background: var(--bg-4);
+      color: var(--text-secondary);
+
+      &:hover {
+        background: var(--bg-3);
+      }
+    }
+
+    &--primary {
+      background: var(--accent-primary);
+      color: #fff;
+
+      &:hover {
+        background: var(--accent-hover);
+      }
+    }
+  }
+}
+
+.guest-import-dialog-enter-active,
+.guest-import-dialog-leave-active {
+  transition: opacity 0.2s ease;
+}
+
+.guest-import-dialog-enter-active .guest-import-dialog__card,
+.guest-import-dialog-leave-active .guest-import-dialog__card {
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.guest-import-dialog-enter-from,
+.guest-import-dialog-leave-to {
+  opacity: 0;
+}
+
+.guest-import-dialog-enter-from .guest-import-dialog__card,
+.guest-import-dialog-leave-to .guest-import-dialog__card {
+  opacity: 0;
+  transform: scale(0.95) translateY(8px);
+}

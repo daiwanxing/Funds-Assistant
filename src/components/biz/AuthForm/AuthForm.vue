@@ -69,8 +69,7 @@ watch(currentMode, (_next, prev) => {
   </div>
 </template>
 
-<style scoped>
-/* Vue Transition animation classes (cannot be replaced by UnoCSS) */
+<style scoped lang="scss" src="./AuthForm.scss"></style>
 .slide-left-enter-active,
 .slide-left-leave-active,
 .slide-right-enter-active,
@@ -95,4 +94,3 @@ watch(currentMode, (_next, prev) => {
   opacity: 0;
   transform: translateX(28px);
 }
-</style>

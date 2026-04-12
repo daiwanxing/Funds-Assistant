@@ -72,11 +72,11 @@ const sizeMap = {
         <motion.div
           key="dialog-panel"
           class="dialog-panel"
-          :class="panelClass"
+          :class="[panelClass, { 'dialog-panel--headerless': hideHeader }]"
           role="dialog"
           aria-modal="true"
           :aria-labelledby="title ? 'dialog-title' : undefined"
-          :style="{ width: sizeMap[size ?? 'md'] }"
+          :style="{ '--dialog-width': sizeMap[size ?? 'md'] }"
           :initial="{ opacity: 0, y: 20, scale: 0.96 }"
           :animate="{ opacity: 1, y: 0, scale: 1 }"
           :exit="{ opacity: 0, y: 12, scale: 0.97 }"
@@ -118,8 +118,7 @@ const sizeMap = {
 
 
           <div 
-            class="dialog-content" 
-            :class="{ '!p-0': hideHeader }"
+            class="dialog-content"
           >
             <slot />
           </div>
@@ -137,103 +136,4 @@ const sizeMap = {
   </Teleport>
 </template>
 
-<style scoped>
-
-.dialog-backdrop {
-  position: fixed;
-  inset: 0;
-  z-index: 1000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
-  background: rgba(0, 0, 0, 0.62);
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
-}
-
-
-.dialog-panel {
-  position: relative;
-  max-width: 100%;
-  max-height: calc(100vh - 48px);
-  display: flex;
-  flex-direction: column;
-  border-radius: 16px;
-  background: var(--bg-2);
-  border: 1px solid var(--border-default);
-  box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.04) inset,
-    0 4px 16px rgba(0, 0, 0, 0.5),
-    0 24px 64px rgba(0, 0, 0, 0.4);
-  overflow: hidden;
-}
-
-
-.dialog-header {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 14px 20px;
-  flex-shrink: 0;
-}
-
-
-.dialog-close-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  width: 28px;
-  height: 28px;
-  border-radius: 8px;
-  background: transparent;
-  border: none;
-  color: #fff;
-  cursor: pointer;
-  transition:
-    background 0.15s ease,
-    opacity 0.15s ease;
-}
-
-.dialog-close-btn:hover {
-  opacity: 0.7;
-}
-
-.dialog-close-btn:active {
-  background: var(--bg-4);
-  opacity: 0.5;
-}
-
-
-.dialog-title {
-  font-family: var(--font-sans);
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--text-primary);
-  margin: 0;
-  line-height: 1.4;
-}
-
-
-.dialog-content {
-  flex: 1;
-  overflow-y: auto;
-  padding: 20px;
-  color: var(--text-secondary);
-  font-family: var(--font-sans);
-  font-size: 14px;
-  line-height: 1.6;
-}
-
-
-.dialog-footer {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 10px;
-  padding: 14px 20px;
-  border-top: 1px solid var(--border-subtle);
-  flex-shrink: 0;
-}
-</style>
+<style scoped lang="scss" src="./Dialog.scss"></style>

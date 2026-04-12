@@ -22,7 +22,7 @@ const onBeforeLeave = (el: Element) => {
   <Teleport to="body">
     <TransitionGroup
       tag="div"
-      class="toast-viewport"
+      class="toast-container"
       aria-live="polite"
       aria-atomic="false"
       @before-leave="onBeforeLeave"
@@ -30,7 +30,7 @@ const onBeforeLeave = (el: Element) => {
       <div
         v-for="item in toasts"
         :key="item.id"
-        class="toast-item"
+        class="toast-container__item"
         @click="dismiss(item.id)"
         @mouseenter="pause(item.id)"
         @mouseleave="resume(item.id)"
@@ -41,61 +41,4 @@ const onBeforeLeave = (el: Element) => {
   </Teleport>
 </template>
 
-<style scoped>
-/* Fixed top-center viewport — NO transform
- * Using left:0 right:0 + justify-content avoids transform
- * containment, which would corrupt position:absolute offsets
- * for the leaving element and break the exit animation.
- */
-.toast-viewport {
-  position: fixed;
-  top: 20px;
-  left: 0;
-  right: 0;
-  z-index: 9999;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  pointer-events: none;
-}
-
-.toast-item {
-  pointer-events: all;
-}
-
-.v-enter-from {
-  opacity: 0;
-  transform: translateY(-20px) scale(0.88);
-}
-.v-enter-active {
-  transition:
-    opacity 0.3s ease,
-    transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-.v-enter-to {
-  opacity: 1;
-  transform: translateY(0) scale(1);
-}
-
-/* Leave — absolute takes element out of flow (→ v-move) */
-.v-leave-from {
-  opacity: 1;
-  transform: translateY(0) scale(1);
-}
-.v-leave-active {
-  position: absolute; /* safe: no transform on parent */
-  transition:
-    opacity 0.22s ease-in,
-    transform 0.22s ease-in;
-}
-.v-leave-to {
-  opacity: 0;
-  transform: translateY(-8px) scale(0.94);
-}
-
-/* Move: siblings fill gap smoothly */
-.v-move {
-  transition: transform 0.38s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-</style>
+<style scoped lang="scss" src="./ToastContainer.scss"></style>

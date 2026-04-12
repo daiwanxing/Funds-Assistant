@@ -139,6 +139,8 @@
     inset: 0;
     background: linear-gradient(-60deg, #0d1326, #1b284c, #111a30, #0d1326);
     background-size: 300% 300%;
+    mask-image: linear-gradient(to right, black 40%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, black 40%, transparent 100%);
     animation: user-bar-gradient-flow 12s ease-in-out infinite;
   }
 
@@ -300,6 +302,12 @@
   &__logout-spinner {
     animation: user-bar-spin 1s linear infinite;
   }
+}
+
+:deep(.user-bar__dialog-panel) {
+  overflow: hidden;
+  border-color: rgba(255, 255, 255, 0.1);
+  background: #000;
 }
 
 @keyframes user-bar-gradient-flow {

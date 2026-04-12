@@ -35,36 +35,36 @@ defineExpose({ reset });
 </script>
 
 <template>
-  <div>
-    <div class="text-center mb-8">
-      <h1 class="font-sans text-xl font-600 text-p m-0 mb-2">
+  <div class="forgot-panel">
+    <div class="forgot-panel__header">
+      <h1 class="forgot-panel__title">
         找回密码
       </h1>
-      <p class="font-sans text-[13px] text-t m-0">
+      <p class="forgot-panel__description">
         输入注册邮箱，我们将发送重置链接
       </p>
     </div>
 
     <form
-      class="flex flex-col gap-5"
+      class="forgot-panel__form"
       @submit.prevent="handleSubmit"
     >
       <div
         v-if="success"
-        class="py-2.5 px-3.5 rounded-lg bg-fall/14 text-fall text-[13px] font-sans border border-fall/20"
+        class="forgot-panel__message"
       >
         {{ success }}
       </div>
 
-      <div class="flex flex-col gap-1.5">
+      <div class="forgot-panel__field">
         <label
           for="auth-form-forgot-email"
-          class="font-sans text-[13px] font-500 text-s"
+          class="forgot-panel__label"
         >邮箱</label>
-        <div class="relative flex items-center">
+        <div class="forgot-panel__input-shell">
           <Mail
             :size="16"
-            class="absolute left-3 text-t pointer-events-none"
+            class="forgot-panel__input-icon"
           />
           <input
             id="auth-form-forgot-email"
@@ -72,29 +72,29 @@ defineExpose({ reset });
             type="email"
             placeholder="name@example.com"
             autocomplete="email"
-            class="w-full h-10 py-0 pr-3 pl-9 border border-white/6 rounded-1.5 bg-white/2 text-p font-mono text-[13px] outline-none transition-[border-color,background] duration-200 placeholder:text-d focus:border-accent focus:bg-black/40"
+            class="forgot-panel__input"
           >
         </div>
       </div>
 
       <button
         type="submit"
-        class="w-full h-10 border-none rounded-lg bg-white text-[#0a0b0d] font-sans text-sm font-600 cursor-pointer tracking-[0.01em] transition-[background,opacity] duration-[180ms] enabled:hover:bg-white/88 enabled:active:bg-white/76 disabled:op-35 disabled:cursor-not-allowed flex items-center justify-center"
+        class="forgot-panel__submit"
         :disabled="!isValid || isLoading"
       >
         <LoaderCircle
           v-if="isLoading"
           :size="18"
-          class="animate-spin"
+          class="forgot-panel__spinner"
         />
         <span v-else>发送重置链接</span>
       </button>
     </form>
 
-    <div class="text-center mt-6 pt-5 border-t border-white/6 border-x-0 border-b-0">
+    <div class="forgot-panel__footer">
       <button
         type="button"
-        class="font-sans text-[13px] text-accent no-underline transition-colors duration-200 hover:text-accent-hover bg-none border-none p-0 cursor-pointer"
+        class="forgot-panel__link-button"
         @click="emit('go-login')"
       >
         返回登录
@@ -102,3 +102,5 @@ defineExpose({ reset });
     </div>
   </div>
 </template>
+
+<style scoped lang="scss" src="./ForgotPanel.scss"></style>

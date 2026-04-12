@@ -1,0 +1,52 @@
+.oauth-buttons {
+  &__divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 24px 0;
+  }
+
+  &__divider-line {
+    flex: 1;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  &__divider-label {
+    color: rgba(255, 255, 255, 0.28);
+    font-size: 11px;
+    letter-spacing: 0.24em;
+    user-select: none;
+  }
+
+  &__list {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+  }
+
+  &__icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  :deep(.oauth-icon-btn) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.02);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    cursor: pointer;
+    transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+
+    &:hover {
+      border-color: rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.06);
+      transform: translateY(-1px);
+    }
+  }
+}

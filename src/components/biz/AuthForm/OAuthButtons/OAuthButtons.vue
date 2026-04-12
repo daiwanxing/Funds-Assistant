@@ -14,15 +14,14 @@ const handleOAuth = (provider: "google" | "github") => {
 </script>
 
 <template>
-  <div>
-    <div class="flex items-center gap-3 my-6">
-      <div class="flex-1 h-px bg-white/8" />
-      <span class="font-sans text-[11px] text-d tracking-widest select-none">或</span>
-      <div class="flex-1 h-px bg-white/8" />
+  <div class="oauth-buttons">
+    <div class="oauth-buttons__divider">
+      <div class="oauth-buttons__divider-line" />
+      <span class="oauth-buttons__divider-label">或</span>
+      <div class="oauth-buttons__divider-line" />
     </div>
     <div
-      class="flex justify-center"
-      :style="{ gap: '40px' }"
+      class="oauth-buttons__list"
     >
       <button
         data-test="oauth-google"
@@ -34,7 +33,7 @@ const handleOAuth = (provider: "google" | "github") => {
         <img
           src="/google-svgrepo-com.svg"
           alt="Google"
-          class="w-5 h-5"
+          class="oauth-buttons__icon"
         >
       </button>
       <button
@@ -47,23 +46,11 @@ const handleOAuth = (provider: "google" | "github") => {
         <img
           src="/github-svgrepo-com.svg"
           alt="GitHub"
-          class="w-5 h-5"
+          class="oauth-buttons__icon"
         >
       </button>
     </div>
   </div>
 </template>
 
-<style scoped>
-.oauth-icon-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background-color: #ffffff;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  cursor: pointer;
-}
-</style>
+<style scoped lang="scss" src="./OAuthButtons.scss"></style>

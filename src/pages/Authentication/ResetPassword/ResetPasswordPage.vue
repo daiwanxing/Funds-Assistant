@@ -62,47 +62,47 @@ const handleSubmit = async () => {
 </script>
 
 <template>
-  <div class="auth-page">
-    <div class="auth-card">
-      <div class="auth-header">
-        <div class="auth-icon">
+  <div class="reset-password-page">
+    <div class="reset-password-page__card">
+      <div class="reset-password-page__header">
+        <div class="reset-password-page__icon">
           <ShieldCheck :size="24" />
         </div>
-        <h1 class="auth-title">
+        <h1 class="reset-password-page__title">
           重置密码
         </h1>
-        <p class="auth-subtitle">
+        <p class="reset-password-page__subtitle">
           设置一个新密码
         </p>
       </div>
 
       <form
-        class="auth-form"
+        class="reset-password-page__form"
         @submit.prevent="handleSubmit"
       >
         <div
           v-if="errorMessage"
-          class="auth-error"
+          class="reset-password-page__feedback reset-password-page__feedback--error"
         >
           {{ errorMessage }}
         </div>
 
         <div
           v-if="successMessage"
-          class="auth-success"
+          class="reset-password-page__feedback reset-password-page__feedback--success"
         >
           {{ successMessage }}
         </div>
 
-        <div class="form-group">
+        <div class="reset-password-page__field">
           <label
             for="reset-password"
-            class="form-label"
+            class="reset-password-page__label"
           >新密码</label>
-          <div class="input-wrapper">
+          <div class="reset-password-page__input-shell">
             <Lock
               :size="16"
-              class="input-icon"
+              class="reset-password-page__input-icon"
             />
             <input
               id="reset-password"
@@ -110,11 +110,11 @@ const handleSubmit = async () => {
               :type="showPassword ? 'text' : 'password'"
               placeholder="至少 6 位"
               autocomplete="new-password"
-              class="form-input"
+              class="reset-password-page__input"
             >
             <button
               type="button"
-              class="password-toggle"
+              class="reset-password-page__toggle"
               @click="showPassword = !showPassword"
             >
               <Eye
@@ -129,15 +129,15 @@ const handleSubmit = async () => {
           </div>
         </div>
 
-        <div class="form-group">
+        <div class="reset-password-page__field">
           <label
             for="reset-confirm"
-            class="form-label"
+            class="reset-password-page__label"
           >确认新密码</label>
-          <div class="input-wrapper">
+          <div class="reset-password-page__input-shell">
             <Lock
               :size="16"
-              class="input-icon"
+              class="reset-password-page__input-icon"
             />
             <input
               id="reset-confirm"
@@ -145,13 +145,13 @@ const handleSubmit = async () => {
               :type="showPassword ? 'text' : 'password'"
               placeholder="再次输入新密码"
               autocomplete="new-password"
-              class="form-input"
-              :class="{ 'input-error': passwordMismatch }"
+              class="reset-password-page__input"
+              :class="{ 'reset-password-page__input--error': passwordMismatch }"
             >
           </div>
           <span
             v-if="passwordMismatch"
-            class="field-error"
+            class="reset-password-page__field-error"
           >
             两次输入的密码不一致
           </span>
@@ -159,17 +159,17 @@ const handleSubmit = async () => {
 
         <button
           type="submit"
-          class="auth-submit"
+          class="reset-password-page__submit"
           :disabled="!isFormValid || isLoading"
         >
           {{ isLoading ? "重置中…" : "确认重置" }}
         </button>
       </form>
 
-      <div class="auth-footer">
+      <div class="reset-password-page__footer">
         <router-link
           to="/auth/sign-in"
-          class="auth-link"
+          class="reset-password-page__back-link"
         >
           返回登录
         </router-link>
@@ -178,200 +178,4 @@ const handleSubmit = async () => {
   </div>
 </template>
 
-<style scoped>
-.auth-page {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--bg-0);
-  padding: 24px;
-}
-
-.auth-card {
-  width: 100%;
-  max-width: 400px;
-  background: var(--bg-2);
-  border: 1px solid var(--border-default);
-  border-radius: 12px;
-  padding: 32px;
-}
-
-.auth-header {
-  text-align: center;
-  margin-bottom: 32px;
-}
-
-.auth-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
-  background: var(--success-soft-bg);
-  color: var(--success-primary);
-  margin-bottom: 16px;
-}
-
-.auth-title {
-  font-family: var(--font-sans);
-  font-size: 20px;
-  font-weight: 600;
-  color: var(--text-primary);
-  margin: 0 0 8px;
-}
-
-.auth-subtitle {
-  font-family: var(--font-sans);
-  font-size: 13px;
-  color: var(--text-tertiary);
-  margin: 0;
-}
-
-.auth-form {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.auth-error {
-  padding: 10px 14px;
-  border-radius: 8px;
-  background: var(--danger-soft-bg);
-  color: var(--danger-primary);
-  font-size: 13px;
-  font-family: var(--font-sans);
-  border: 1px solid rgba(255, 68, 58, 0.2);
-}
-
-.auth-success {
-  padding: 10px 14px;
-  border-radius: 8px;
-  background: var(--success-soft-bg);
-  color: var(--success-primary);
-  font-size: 13px;
-  font-family: var(--font-sans);
-  border: 1px solid rgba(48, 209, 88, 0.2);
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.form-label {
-  font-family: var(--font-sans);
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--text-secondary);
-}
-
-.input-wrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-.input-icon {
-  position: absolute;
-  left: 12px;
-  color: var(--text-tertiary);
-  pointer-events: none;
-}
-
-.form-input {
-  width: 100%;
-  height: 40px;
-  padding: 0 12px 0 36px;
-  border: 1px solid var(--border-default);
-  border-radius: 8px;
-  background: var(--bg-3);
-  color: var(--text-primary);
-  font-family: var(--font-sans);
-  font-size: 14px;
-  outline: none;
-  transition: border-color 0.2s;
-}
-
-.form-input::placeholder {
-  color: var(--text-disabled);
-}
-
-.form-input:focus {
-  border-color: var(--border-focus);
-}
-
-.form-input.input-error {
-  border-color: var(--danger-primary);
-}
-
-.field-error {
-  font-family: var(--font-sans);
-  font-size: 12px;
-  color: var(--danger-primary);
-}
-
-.password-toggle {
-  position: absolute;
-  right: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  border: none;
-  background: transparent;
-  color: var(--text-tertiary);
-  cursor: pointer;
-  border-radius: 4px;
-  transition: color 0.2s;
-}
-
-.password-toggle:hover {
-  color: var(--text-secondary);
-}
-
-.auth-link {
-  font-family: var(--font-sans);
-  font-size: 13px;
-  color: var(--accent-primary);
-  text-decoration: none;
-  transition: color 0.2s;
-}
-
-.auth-link:hover {
-  color: var(--accent-hover);
-}
-
-.auth-submit {
-  width: 100%;
-  height: 40px;
-  border: none;
-  border-radius: 8px;
-  background: var(--accent-primary);
-  color: #fff;
-  font-family: var(--font-sans);
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background 0.2s, opacity 0.2s;
-}
-
-.auth-submit:hover:not(:disabled) {
-  background: var(--accent-hover);
-}
-
-.auth-submit:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.auth-footer {
-  text-align: center;
-  margin-top: 24px;
-  padding-top: 20px;
-  border-top: 1px solid var(--border-subtle);
-}
-</style>
+<style scoped lang="scss" src="./ResetPasswordPage.scss"></style>

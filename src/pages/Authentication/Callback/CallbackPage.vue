@@ -74,14 +74,14 @@ const goToSignIn = () => {
 </script>
 
 <template>
-  <div class="auth-page">
-    <div class="auth-card">
-      <div class="auth-header">
+  <div class="auth-callback-page">
+    <div class="auth-callback-page__card">
+      <div class="auth-callback-page__header">
         <div
-          class="auth-icon"
+          class="auth-callback-page__status-icon"
           :class="{
-            'auth-icon--success': status === 'success',
-            'auth-icon--error': status === 'error',
+            'auth-callback-page__status-icon--success': status === 'success',
+            'auth-callback-page__status-icon--error': status === 'error',
           }"
         >
           <CheckCircle
@@ -94,13 +94,13 @@ const goToSignIn = () => {
           />
           <div
             v-else
-            class="loader"
+            class="auth-callback-page__loader"
           />
         </div>
-        <h1 class="auth-title">
+        <h1 class="auth-callback-page__title">
           {{ title }}
         </h1>
-        <p class="auth-subtitle">
+        <p class="auth-callback-page__message">
           {{ message }}
         </p>
       </div>
@@ -108,7 +108,7 @@ const goToSignIn = () => {
       <button
         v-if="status !== 'loading'"
         type="button"
-        class="auth-submit"
+        class="auth-callback-page__action"
         @click="goToSignIn"
       >
         {{ actionLabel }}
@@ -117,96 +117,4 @@ const goToSignIn = () => {
   </div>
 </template>
 
-<style scoped>
-.auth-page {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--bg-0);
-  padding: 24px;
-}
-
-.auth-card {
-  width: 100%;
-  max-width: 400px;
-  background: var(--bg-2);
-  border: 1px solid var(--border-default);
-  border-radius: 12px;
-  padding: 32px;
-  text-align: center;
-}
-
-.auth-header {
-  margin-bottom: 24px;
-}
-
-.auth-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  margin-bottom: 16px;
-}
-
-.auth-icon--success {
-  background: var(--success-soft-bg);
-  color: var(--success-primary);
-}
-
-.auth-icon--error {
-  background: var(--danger-soft-bg);
-  color: var(--danger-primary);
-}
-
-.auth-title {
-  font-family: var(--font-sans);
-  font-size: 20px;
-  font-weight: 600;
-  color: var(--text-primary);
-  margin: 0 0 8px;
-}
-
-.auth-subtitle {
-  font-family: var(--font-sans);
-  font-size: 13px;
-  color: var(--text-tertiary);
-  margin: 0;
-  line-height: 1.5;
-}
-
-.auth-submit {
-  width: 100%;
-  height: 40px;
-  border: none;
-  border-radius: 8px;
-  background: var(--accent-primary);
-  color: #fff;
-  font-family: var(--font-sans);
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.auth-submit:hover {
-  background: var(--accent-hover);
-}
-
-.loader {
-  width: 24px;
-  height: 24px;
-  border: 2px solid var(--border-default);
-  border-top-color: var(--accent-primary);
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-</style>
+<style scoped lang="scss" src="./CallbackPage.scss"></style>

@@ -36,29 +36,29 @@ const handleSubmit = async () => {
 </script>
 
 <template>
-  <div>
-    <div class="text-center mb-8">
-      <h1 class="font-sans text-xl font-600 text-p m-0 mb-2">
+  <div class="login-panel">
+    <div class="login-panel__header">
+      <h1 class="login-panel__title">
         登录 Funds Assistant
       </h1>
-      <p class="font-sans text-[13px] text-t m-0">
+      <p class="login-panel__description">
         登录以开启云端同步
       </p>
     </div>
 
     <form
-      class="flex flex-col gap-5"
+      class="login-panel__form"
       @submit.prevent="handleSubmit"
     >
-      <div class="flex flex-col gap-1.5">
+      <div class="login-panel__field">
         <label
           for="auth-form-email"
-          class="font-sans text-[13px] font-500 text-s"
+          class="login-panel__label"
         >邮箱</label>
-        <div class="relative flex items-center">
+        <div class="login-panel__input-shell">
           <Mail
             :size="16"
-            class="absolute left-3 text-t pointer-events-none"
+            class="login-panel__input-icon"
           />
           <input
             id="auth-form-email"
@@ -66,20 +66,20 @@ const handleSubmit = async () => {
             type="email"
             placeholder="name@example.com"
             autocomplete="email"
-            class="w-full h-10 py-0 pr-3 pl-9 border border-white/6 rounded-1.5 bg-white/2 text-p font-mono text-[13px] outline-none transition-[border-color,background] duration-200 placeholder:text-d focus:border-accent focus:bg-black/40"
+            class="login-panel__input"
           >
         </div>
       </div>
 
-      <div class="flex flex-col gap-1.5">
+      <div class="login-panel__field">
         <label
           for="auth-form-password"
-          class="font-sans text-[13px] font-500 text-s"
+          class="login-panel__label"
         >密码</label>
-        <div class="relative flex items-center">
+        <div class="login-panel__input-shell">
           <Lock
             :size="16"
-            class="absolute left-3 text-t pointer-events-none"
+            class="login-panel__input-icon"
           />
           <input
             id="auth-form-password"
@@ -87,11 +87,11 @@ const handleSubmit = async () => {
             :type="showPassword ? 'text' : 'password'"
             placeholder="输入密码"
             autocomplete="current-password"
-            class="w-full h-10 py-0 pr-3 pl-9 border border-white/6 rounded-1.5 bg-white/2 text-p font-mono text-[13px] outline-none transition-[border-color,background] duration-200 placeholder:text-d focus:border-accent focus:bg-black/40"
+            class="login-panel__input"
           >
           <button
             type="button"
-            class="absolute right-2 flex items-center justify-center w-7 h-7 border-none bg-transparent text-t cursor-pointer rounded transition-colors duration-200 hover:text-s"
+            class="login-panel__visibility-button"
             @click="showPassword = !showPassword"
           >
             <Eye
@@ -106,10 +106,10 @@ const handleSubmit = async () => {
         </div>
       </div>
 
-      <div class="flex justify-end -mt-2">
+      <div class="login-panel__support">
         <button
           type="button"
-          class="font-sans text-[13px] text-accent no-underline transition-colors duration-200 hover:text-accent-hover bg-none border-none p-0 cursor-pointer"
+          class="login-panel__link-button"
           @click="emit('go-forgot')"
         >
           忘记密码？
@@ -118,13 +118,13 @@ const handleSubmit = async () => {
 
       <button
         type="submit"
-        class="w-full h-10 border-none rounded-lg bg-white text-[#0a0b0d] font-sans text-sm font-600 cursor-pointer tracking-[0.01em] transition-[background,opacity] duration-[180ms] enabled:hover:bg-white/88 enabled:active:bg-white/76 disabled:op-50 disabled:cursor-not-allowed flex items-center justify-center"
+        class="login-panel__submit"
         :disabled="!isValid || isLoading"
       >
         <LoaderCircle
           v-if="isLoading"
           :size="18"
-          class="animate-spin"
+          class="login-panel__spinner"
         />
         <span v-else>登录</span>
       </button>
@@ -132,11 +132,11 @@ const handleSubmit = async () => {
 
     <OAuthButtons />
 
-    <div class="text-center mt-6">
-      <span class="font-sans text-[13px] text-t mr-1">还没有账号？</span>
+    <div class="login-panel__footer">
+      <span class="login-panel__footer-text">还没有账号？</span>
       <button
         type="button"
-        class="font-sans text-[13px] text-accent no-underline transition-colors duration-200 hover:text-accent-hover bg-none border-none p-0 cursor-pointer"
+        class="login-panel__link-button"
         @click="emit('go-register')"
       >
         注册
@@ -144,3 +144,5 @@ const handleSubmit = async () => {
     </div>
   </div>
 </template>
+
+<style scoped lang="scss" src="./LoginPanel.scss"></style>

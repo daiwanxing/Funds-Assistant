@@ -6,10 +6,4 @@
   />
 </template>
 
-<style scoped>
-.dropdown-divider {
-  height: 1px;
-  margin: 4px 0;
-  background: var(--border-subtle);
-}
-</style>
+<style scoped lang="scss" src="./DropdownDivider.scss"></style>

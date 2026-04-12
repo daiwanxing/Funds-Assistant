@@ -165,10 +165,8 @@ watch(
         class="dropdown-panel"
         role="menu"
         :style="{
-          position: 'absolute',
-          top: y != null ? `${y}px` : '0px',
-          left: x != null ? `${x}px` : '0px',
-          margin: 0
+          '--dropdown-x': x != null ? `${x}px` : '0px',
+          '--dropdown-y': y != null ? `${y}px` : '0px',
         }"
         :initial="{ opacity: 0, y: -6, scale: 0.97 }"
         :animate="{ opacity: 1, y: 0, scale: 1 }"
@@ -189,50 +187,4 @@ watch(
   </Teleport>
 </template>
 
-<style scoped>
-
-.dropdown-trigger-wrapper {
-  display: inline-flex;
-  /* 不添加额外样式，100% 透传给 slot 内容 */
-}
-
-
-.dropdown-panel {
-  /* z-index 高于 Dialog(1000) */
-  z-index: 1100;
-  position: absolute;
-  display: flex;
-  flex-direction: column;
-  padding: 4px 0;
-  border-radius: 10px;
-  background: var(--bg-2);
-  border: 1px solid var(--border-default);
-  max-height: 320px;
-  overflow-y: auto;
-  overflow-x: hidden;
-  box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.04) inset,
-    0 4px 16px rgba(0, 0, 0, 0.5),
-    0 24px 48px rgba(0, 0, 0, 0.4);
-  /* 内部滚动条样式 */
-  scrollbar-width: thin;
-  scrollbar-color: var(--scrollbar-thumb) transparent;
-}
-
-.dropdown-panel::-webkit-scrollbar {
-  width: 4px;
-}
-
-.dropdown-panel::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.dropdown-panel::-webkit-scrollbar-thumb {
-  background: var(--scrollbar-thumb);
-  border-radius: 999px;
-}
-
-.dropdown-panel::-webkit-scrollbar-thumb:hover {
-  background: var(--scrollbar-thumb-hover);
-}
-</style>
+<style scoped lang="scss" src="./Dropdown.scss"></style>

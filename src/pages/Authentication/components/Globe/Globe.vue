@@ -170,133 +170,34 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="globe-container">
+  <div class="auth-globe">
     <canvas
       ref="canvasRef"
-      class="globe-canvas"
+      class="auth-globe__canvas"
     />
 
     <div
       ref="overlayRef"
-      class="globe-overlay"
+      class="auth-globe__overlay"
     >
       <div
         v-for="item in items"
         :key="item.id"
         :data-market-id="item.id"
-        class="market-label"
-        :class="`market-label--${item.tone}`"
+        class="auth-globe__label"
+        :class="`auth-globe__label--${item.tone}`"
         :style="{
           '--badge-offset-x': `${item.labelOffset?.[0] ?? 0}px`,
           '--badge-offset-y': `${item.labelOffset?.[1] ?? 0}px`,
         }"
       >
-        <div class="market-badge">
-          <span class="market-badge-name">{{ item.label }}</span>
-          <span class="market-badge-change">{{ item.change }}</span>
+        <div class="auth-globe__badge">
+          <span class="auth-globe__badge-name">{{ item.label }}</span>
+          <span class="auth-globe__badge-change">{{ item.change }}</span>
         </div>
       </div>
     </div>
   </div>
 </template>
 
-<style scoped>
-.globe-container {
-  width: 100%;
-  height: 100%;
-  aspect-ratio: 1;
-  max-width: 560px;
-  margin: 0 auto;
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.globe-canvas {
-  width: 100%;
-  height: 100%;
-  contain: layout paint size;
-  opacity: 0;
-  filter: drop-shadow(0 24px 48px rgba(0, 0, 0, 0.45));
-  animation: fade-in 1.4s ease 0.2s forwards;
-}
-
-.globe-overlay {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-}
-
-.market-label {
-  position: absolute;
-  display: inline-flex;
-  flex-direction: column;
-  transform: translate(
-    calc(-50% + var(--badge-offset-x, 0px)),
-    calc(-50% + var(--badge-offset-y, 0px))
-  );
-  transition: opacity 260ms ease, visibility 260ms ease, top 260ms ease, left 260ms ease;
-  will-change: top, left, opacity;
-}
-
-.market-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  min-height: 38px;
-  padding: 0 12px;
-  border-radius: 10px;
-  background: rgba(17, 19, 24, 0.78);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow:
-    0 12px 32px rgba(0, 0, 0, 0.32),
-    inset 0 1px 0 rgba(255, 255, 255, 0.06);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-}
-
-.market-badge-name,
-.market-badge-change {
-  font-family: var(--font-mono);
-  white-space: nowrap;
-}
-
-.market-badge-name {
-  color: rgba(255, 255, 255, 0.94);
-  font-size: 14px;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
-.market-badge-change {
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-}
-
-.market-label--up .market-badge-change {
-  color: var(--rise-primary);
-}
-
-.market-label--down .market-badge-change {
-  color: var(--fall-primary);
-}
-
-.market-label--flat .market-badge-change {
-  color: var(--text-secondary);
-}
-
-@keyframes fade-in {
-  from {
-    opacity: 0;
-    transform: scale(0.96);
-  }
-
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-</style>
+<style scoped lang="scss" src="./Globe.scss"></style>
