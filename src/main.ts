@@ -3,9 +3,8 @@ import { createPinia } from "pinia";
 import App from "./App.vue";
 import router from "./router";
 import { VueQueryPlugin } from "@tanstack/vue-query";
-import "@unocss/reset/tailwind.css";
 import "@/styles/tokens.css";
-import "virtual:uno.css";
+import "@/styles/base.css";
 
 const app = createApp(App);
 

@@ -65,7 +65,7 @@ pnpm test:run     # 运行测试
 | 类型定义如何组织、放在哪里 | `.rules/TYPE_MANAGEMENT.md` |
 | 当前项目架构总览 | `docs/architecture.md` |
 | ESLint 规则与约束 | `.rules/LINT.md` |
-| 设计令牌、样式约定 | `src/styles/tokens.css` · `uno.config.ts` |
+| 设计令牌、样式约定 | `src/styles/tokens.css` · `src/styles/base.css` |
 | API 数据获取与缓存策略 | `src/composables/fund/useFundData.ts` |
 | 基金/指数数据源知识库与走马灯接源评估 | `docs/market-data-sources.md` |
 | Supabase migration 规范与历史维护 | `docs/supabase-migration-guidelines.md` |

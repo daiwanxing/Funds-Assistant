@@ -14,7 +14,6 @@ export default ts.config(
       'src/icons/**',
       '**/*.d.ts',
       'vite.config.ts',
-      'uno.config.ts',
       'vitest.config.ts',
     ],
   },
