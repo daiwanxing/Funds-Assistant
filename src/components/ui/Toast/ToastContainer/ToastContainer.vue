@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Toast from "./Toast.vue";
+import Toast from "../Toast.vue";
 import { useToast } from "@/composables/useToast";
 
 const { toasts, dismiss, pause, resume } = useToast();

@@ -1,7 +1,7 @@
 import { computed } from "vue";
 import { defineStore } from "pinia";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/vue-query";
-import { useRouter } from "vue-router";
+import { useRoute } from "vue-router";
 import { fetchBootstrap } from "@/api/user";
 import * as authApi from "@/api/auth";
 import type { BootstrapResponse, OAuthProvider } from "@/types/auth";
@@ -94,10 +94,10 @@ export const useAuthStore = defineStore("auth", () => {
     mutationFn: ({ email }: { email: string }) => authApi.resendVerification(email),
   });
 
-  const router = useRouter();
+  const route = useRoute();
 
   const startOAuthSignIn = (provider: OAuthProvider) => {
-    const redirectUrl = router.currentRoute.value.fullPath;
+    const redirectUrl = route.fullPath;
     authApi.startOAuthSignIn(provider, redirectUrl);
   };
 

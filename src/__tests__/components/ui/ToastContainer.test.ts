@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { mount } from "@vue/test-utils";
 import { nextTick } from "vue";
-import ToastContainer from "@/components/ui/Toast/ToastContainer.vue";
+import ToastContainer from "@/components/ui/Toast/ToastContainer/ToastContainer.vue";
 import { toast } from "@/composables/useToast";
 
 describe("ToastContainer", () => {

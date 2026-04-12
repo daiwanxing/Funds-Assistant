@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { DropdownGroupProps } from "./types";
+import type { DropdownGroupProps } from "../types";
 
 defineProps<DropdownGroupProps>();
 </script>
