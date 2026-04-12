@@ -27,7 +27,7 @@ const handleOAuth = (provider: "google" | "github") => {
         data-test="oauth-google"
         type="button"
         title="使用 Google 登录"
-        class="oauth-icon-btn"
+        class="oauth-buttons__button"
         @click="handleOAuth('google')"
       >
         <img
@@ -40,7 +40,7 @@ const handleOAuth = (provider: "google" | "github") => {
         data-test="oauth-github"
         type="button"
         title="使用 GitHub 登录"
-        class="oauth-icon-btn"
+        class="oauth-buttons__button"
         @click="handleOAuth('github')"
       >
         <img

@@ -30,7 +30,7 @@
     height: 20px;
   }
 
-  :deep(.oauth-icon-btn) {
+  &__button {
     display: flex;
     align-items: center;
     justify-content: center;

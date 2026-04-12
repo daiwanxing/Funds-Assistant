@@ -147,7 +147,7 @@ watch(
   <!-- Trigger wrapper：捕获事件，挂载 floating reference -->
   <div
     ref="triggerRef"
-    class="dropdown-trigger-wrapper"
+    class="dropdown__trigger"
     @click="onTriggerClick"
     @mouseenter="onTriggerMouseEnter"
     @mouseleave="onTriggerMouseLeave"
@@ -162,7 +162,7 @@ watch(
         v-if="open"
         :ref="(el: any) => { floatingRef = el ? (el.$el || el) : null }"
         key="dropdown-panel"
-        class="dropdown-panel"
+        class="dropdown__panel"
         role="menu"
         :style="{
           '--dropdown-x': x != null ? `${x}px` : '0px',
