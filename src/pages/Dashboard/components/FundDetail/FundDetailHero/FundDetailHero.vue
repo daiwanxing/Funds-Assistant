@@ -7,9 +7,14 @@ defineProps<{
   periodReturn: number | null;
   periodLabel: string;
   isRising: boolean;
+  isWatchlisted?: boolean;
   metaTags?: string[];
   categoryLabel?: string;
   valueLabel?: string;
+}>();
+
+defineEmits<{
+  (e: "toggle-watchlist"): void;
 }>();
 </script>
 
@@ -20,6 +25,21 @@ defineProps<{
         <span class="fund-detail-hero__code">
           {{ profile.code }}
         </span>
+        <button
+          type="button"
+          :class="[
+            'fund-detail-hero__watchlist-toggle',
+            isWatchlisted ? 'fund-detail-hero__watchlist-toggle--active' : '',
+          ]"
+          @click="$emit('toggle-watchlist')"
+        >
+          <span class="fund-detail-hero__watchlist-toggle-marker">
+            {{ isWatchlisted ? "✓" : "+" }}
+          </span>
+          <span class="fund-detail-hero__watchlist-toggle-label">
+            {{ isWatchlisted ? "已自选" : "加自选" }}
+          </span>
+        </button>
       </div>
 
       <div class="fund-detail-hero__title-row">

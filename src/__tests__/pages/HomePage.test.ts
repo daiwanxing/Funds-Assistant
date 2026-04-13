@@ -70,6 +70,9 @@ const globalIndicesState = {
   refetch: vi.fn(),
 };
 
+const searchOptionsState = ref<{ label: string; value: string; desc?: string }[]>([]);
+const searchLoadingState = ref(false);
+
 const holidayState = {
   loadFromStorage: vi.fn(),
 };
@@ -103,8 +106,8 @@ vi.mock("@/stores/watchlist", () => ({
 
 vi.mock("@/composables/fund/useFundSearch", () => ({
   useFundSearch: () => ({
-    searchOptions: ref([]),
-    loading: ref(false),
+    searchOptions: searchOptionsState,
+    loading: searchLoadingState,
     error: ref(null),
   }),
 }));
@@ -125,23 +128,85 @@ let capturedWatchlistRef: { value: FundListItem[] } | undefined;
 const WatchlistHeaderStub = defineComponent({
   name: "WatchlistHeader",
   props: {
+    query: {
+      type: String,
+      default: "",
+    },
     savedCount: {
       type: Number,
       default: 0,
     },
   },
-  template: "<div data-test='saved-count'>{{ savedCount }}</div>",
+  emits: ["update:query"],
+  template: `
+    <div>
+      <div data-test='saved-count'>{{ savedCount }}</div>
+      <input
+        data-test="search-query"
+        :value="query"
+        @input="$emit('update:query', $event.target.value)"
+      />
+    </div>
+  `,
 });
 
 const FundSearchListStub = defineComponent({
   name: "FundSearchList",
   props: {
-    addedCodes: {
+    options: {
       type: Array,
       default: () => [],
     },
+    activeCode: {
+      type: String,
+      default: null,
+    },
   },
-  template: "<div data-test='search-added-codes'>{{ (addedCodes as string[]).join(',') }}</div>",
+  emits: ["select"],
+  methods: {
+    getItemValue(item: { value: string }) {
+      return item.value;
+    },
+    getItemLabel(item: { label: string }) {
+      return item.label;
+    },
+  },
+  template: `
+    <div data-test="search-list">
+      <div data-test="search-active-code">{{ activeCode }}</div>
+      <button
+        v-for="item in options"
+        :key="getItemValue(item)"
+        type="button"
+        :data-test="'search-select-' + getItemValue(item)"
+        @click="$emit('select', getItemValue(item))"
+      >
+        {{ getItemLabel(item) }}
+      </button>
+    </div>
+  `,
+});
+
+const FundDetailStub = defineComponent({
+  name: "FundDetail",
+  props: {
+    code: {
+      type: String,
+      default: null,
+    },
+    isWatchlisted: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  emits: ["toggle-watchlist"],
+  template: `
+    <div data-test="detail-panel">
+      <div data-test="detail-code">{{ code }}</div>
+      <div data-test="detail-watchlisted">{{ isWatchlisted ? 'yes' : 'no' }}</div>
+      <button data-test="detail-toggle" type="button" @click="$emit('toggle-watchlist')">toggle</button>
+    </div>
+  `,
 });
 
 const GuestImportDialogStub = defineComponent({
@@ -188,7 +253,7 @@ const mountPage = async () => {
         GlobalTicker: { template: "<div />" },
         StatusBar: { template: "<div />" },
         UserBar: { template: "<div />" },
-        FundDetail: { template: "<div />" },
+        FundDetail: FundDetailStub,
         WatchlistHeader: WatchlistHeaderStub,
         FundSearchList: FundSearchListStub,
         GuestImportDialog: GuestImportDialogStub,
@@ -219,11 +284,23 @@ describe("HomePage selection behavior", () => {
     });
 
     fundDataState.fetchData.mockReset();
+    fundDataState.addFund.mockReset();
+    fundDataState.deleteFund.mockReset();
     fundDataState.dataList.value = [];
     fundDataState.dataListDft.value = [];
     fundDataState.allGains.value = [0, 0];
     fundDataState.allCostGains.value = [0, 0];
     fundDataState.loadingList.value = false;
+    fundDataState.addFund.mockImplementation((codes: string[]) => {
+      codes.forEach((code) => {
+        if (!watchlistItems.value.some((item) => item.code === code)) {
+          watchlistItems.value = [...watchlistItems.value, { code, num: 0, cost: 0 }];
+        }
+      });
+    });
+    fundDataState.deleteFund.mockImplementation((code: string) => {
+      watchlistItems.value = watchlistItems.value.filter((item) => item.code !== code);
+    });
 
     globalIndicesState.refetch.mockReset();
     holidayState.loadFromStorage.mockReset();
@@ -240,6 +317,18 @@ describe("HomePage selection behavior", () => {
     watchlistState.updateFund.mockReset();
     watchlistState.importGuestFunds.mockReset();
     watchlistState.dismissImportPrompt.mockReset();
+    watchlistState.addFund.mockImplementation((codes: string[]) => {
+      codes.forEach((code) => {
+        if (!watchlistItems.value.some((item) => item.code === code)) {
+          watchlistItems.value = [...watchlistItems.value, { code, num: 0, cost: 0 }];
+        }
+      });
+    });
+    watchlistState.removeFund.mockImplementation((code: string) => {
+      watchlistItems.value = watchlistItems.value.filter((item) => item.code !== code);
+    });
+    searchOptionsState.value = [];
+    searchLoadingState.value = false;
 
     capturedWatchlistRef = undefined;
   });
@@ -413,5 +502,122 @@ describe("HomePage selection behavior", () => {
     expect(authState.bootstrap.refetch).not.toHaveBeenCalled();
     expect(globalIndicesState.refetch).not.toHaveBeenCalled();
     expect(fundDataState.fetchData).not.toHaveBeenCalled();
+  });
+
+  it("switches detail to the clicked search result without adding it to watchlist", async () => {
+    watchlistItems.value = [{ code: "000001", num: 0 }];
+    fundDataState.dataList.value = [createFundItem("000001")];
+    fundDataState.dataListDft.value = [createFundItem("000001")];
+    searchOptionsState.value = [
+      { label: "基金A", value: "000003", desc: "000003 · 混合型" },
+      { label: "基金B", value: "000004", desc: "000004 · 债券型" },
+    ];
+
+    const wrapper = await mountPage();
+
+    await wrapper.get("[data-test='search-query']").setValue("基金");
+    await wrapper.get("[data-test='search-select-000003']").trigger("click");
+
+    expect(wrapper.get("[data-test='detail-code']").text()).toBe("000003");
+    expect(settingsState.RealtimeFundcode.value).toBe("000001");
+    expect(fundDataState.addFund).not.toHaveBeenCalled();
+  });
+
+  it("keeps the current detail after clearing the search query and leaves saved-list active empty when the detail fund is not watchlisted", async () => {
+    watchlistItems.value = [{ code: "000001", num: 0 }];
+    settingsState.RealtimeFundcode.value = "000001";
+    fundDataState.dataList.value = [createFundItem("000001")];
+    fundDataState.dataListDft.value = [createFundItem("000001")];
+    searchOptionsState.value = [{ label: "基金A", value: "000003", desc: "000003 · 混合型" }];
+
+    const wrapper = await mountPage();
+
+    await wrapper.get("[data-test='search-query']").setValue("基金");
+    await wrapper.get("[data-test='search-select-000003']").trigger("click");
+    await wrapper.get("[data-test='search-query']").setValue("");
+
+    expect(wrapper.get("[data-test='detail-code']").text()).toBe("000003");
+    expect(wrapper.getComponent(FundSavedList).props("activeCode")).toBeNull();
+  });
+
+  it("syncs saved-list active to the current detail when clearing search and the detail fund is watchlisted", async () => {
+    watchlistItems.value = [
+      { code: "000001", num: 0 },
+      { code: "000003", num: 0 },
+    ];
+    settingsState.RealtimeFundcode.value = "000001";
+    fundDataState.dataList.value = [createFundItem("000001"), createFundItem("000003")];
+    fundDataState.dataListDft.value = [createFundItem("000001"), createFundItem("000003")];
+    searchOptionsState.value = [{ label: "基金A", value: "000003", desc: "000003 · 混合型" }];
+
+    const wrapper = await mountPage();
+
+    await wrapper.get("[data-test='search-query']").setValue("基金");
+    await wrapper.get("[data-test='search-select-000003']").trigger("click");
+    await wrapper.get("[data-test='search-query']").setValue("");
+
+    expect(wrapper.get("[data-test='detail-code']").text()).toBe("000003");
+    expect(wrapper.getComponent(FundSavedList).props("activeCode")).toBe("000003");
+  });
+
+  it("adds the current searched fund from the detail toggle without leaving the search list", async () => {
+    watchlistItems.value = [{ code: "000001", num: 0 }];
+    fundDataState.dataList.value = [createFundItem("000001")];
+    fundDataState.dataListDft.value = [createFundItem("000001")];
+    searchOptionsState.value = [{ label: "基金A", value: "000003", desc: "000003 · 混合型" }];
+
+    const wrapper = await mountPage();
+
+    await wrapper.get("[data-test='search-query']").setValue("基金");
+    await wrapper.get("[data-test='search-select-000003']").trigger("click");
+    await wrapper.get("[data-test='detail-toggle']").trigger("click");
+
+    expect(watchlistState.addFund).toHaveBeenCalledWith(["000003"]);
+    expect(fundDataState.addFund).not.toHaveBeenCalled();
+    expect(wrapper.find("[data-test='search-list']").exists()).toBe(true);
+    expect(wrapper.get("[data-test='detail-code']").text()).toBe("000003");
+    expect(wrapper.get("[data-test='detail-watchlisted']").text()).toBe("yes");
+  });
+
+  it("removes the current searched fund from watchlist through the detail toggle", async () => {
+    watchlistItems.value = [
+      { code: "000001", num: 0 },
+      { code: "000003", num: 0 },
+    ];
+    settingsState.RealtimeFundcode.value = "000001";
+    fundDataState.dataList.value = [createFundItem("000001"), createFundItem("000003")];
+    fundDataState.dataListDft.value = [createFundItem("000001"), createFundItem("000003")];
+    searchOptionsState.value = [{ label: "基金A", value: "000003", desc: "000003 · 混合型" }];
+
+    const wrapper = await mountPage();
+
+    await wrapper.get("[data-test='search-query']").setValue("基金");
+    await wrapper.get("[data-test='search-select-000003']").trigger("click");
+
+    expect(wrapper.get("[data-test='detail-watchlisted']").text()).toBe("yes");
+
+    await wrapper.get("[data-test='detail-toggle']").trigger("click");
+
+    expect(watchlistState.removeFund).toHaveBeenCalledWith("000003");
+    expect(fundDataState.deleteFund).not.toHaveBeenCalled();
+    expect(wrapper.get("[data-test='detail-watchlisted']").text()).toBe("no");
+  });
+
+  it("keeps the search list and current detail visible when removing the only saved fund from search mode", async () => {
+    watchlistItems.value = [{ code: "000003", num: 0 }];
+    settingsState.RealtimeFundcode.value = "000003";
+    fundDataState.dataList.value = [createFundItem("000003")];
+    fundDataState.dataListDft.value = [createFundItem("000003")];
+    searchOptionsState.value = [{ label: "基金A", value: "000003", desc: "000003 · 混合型" }];
+
+    const wrapper = await mountPage();
+
+    await wrapper.get("[data-test='search-query']").setValue("基金");
+    await wrapper.get("[data-test='search-select-000003']").trigger("click");
+    await wrapper.get("[data-test='detail-toggle']").trigger("click");
+
+    expect(wrapper.find("[data-test='search-list']").exists()).toBe(true);
+    expect(wrapper.get("[data-test='detail-code']").text()).toBe("000003");
+    expect(wrapper.get("[data-test='detail-watchlisted']").text()).toBe("no");
   });
 });

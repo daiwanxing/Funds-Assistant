@@ -7,6 +7,11 @@ import { BarChart2 } from "lucide-vue-next";
 
 const props = defineProps<{
   code: string | null;
+  isWatchlisted?: boolean;
+}>();
+
+const emit = defineEmits<{
+  (e: "toggle-watchlist"): void;
 }>();
 
 const {
@@ -114,8 +119,10 @@ const {
         :period-return="periodReturn"
         :period-label="periodLabel"
         :is-rising="isRising"
+        :is-watchlisted="isWatchlisted"
         category-label="基金"
         value-label="净值"
+        @toggle-watchlist="emit('toggle-watchlist')"
       />
 
       <div

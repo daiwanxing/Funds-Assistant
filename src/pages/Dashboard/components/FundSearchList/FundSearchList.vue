@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue';
-import { Search, Plus, Check } from 'lucide-vue-next';
+import { Search } from 'lucide-vue-next';
 import type { SearchFundItem } from '@/composables/fund/useFundSearch';
 
 type HighlightSegment = {
@@ -8,20 +7,16 @@ type HighlightSegment = {
   matched: boolean;
 };
 
-const props = defineProps<{
+defineProps<{
   query: string;
   options: SearchFundItem[];
   loading: boolean;
-  addedCodes: string[];
+  activeCode?: string | null;
 }>();
 
 const emit = defineEmits<{
-  (e: 'add', code: string): void;
+  (e: 'select', code: string): void;
 }>();
-
-const addedKeys = computed(() => {
-  return new Set(props.addedCodes);
-});
 
 const buildHighlightSegments = (text: string, query: string): HighlightSegment[] => {
   if (!text) {
@@ -44,10 +39,8 @@ const buildHighlightSegments = (text: string, query: string): HighlightSegment[]
     }));
 };
 
-const handleAdd = (code: string) => {
-  if (!addedKeys.value.has(code)) {
-    emit('add', code);
-  }
+const handleSelect = (code: string) => {
+  emit('select', code);
 };
 </script>
 
@@ -58,7 +51,7 @@ const handleAdd = (code: string) => {
       class="search-fund-list__summary"
     >
       <div class="search-fund-list__summary-text">
-        找到 <span class="search-fund-list__summary-count">{{ options.length }}</span> 个匹配结果 · 点击 + 添加至自选
+        找到 <span class="search-fund-list__summary-count">{{ options.length }}</span> 个匹配结果 · 点击基金查看详情
       </div>
     </div>
 
@@ -236,14 +229,45 @@ const handleAdd = (code: string) => {
           <li
             v-for="item in options"
             :key="item.value"
-            class="search-fund-list__row"
+            :class="[
+              'search-fund-list__row',
+              item.value === activeCode ? 'search-fund-list__row--active' : '',
+            ]"
           >
-            <div class="search-fund-list__identity">
-              <div class="search-fund-list__headline">
-                <span class="search-fund-list__name">
+            <button
+              type="button"
+              class="search-fund-list__row-button"
+              @click="handleSelect(item.value)"
+            >
+              <div class="search-fund-list__identity">
+                <div class="search-fund-list__headline">
+                  <span class="search-fund-list__name">
+                    <template
+                      v-for="(segment, index) in buildHighlightSegments(item.label, query)"
+                      :key="`${item.value}-label-${index}`"
+                    >
+                      <span
+                        v-if="segment.matched"
+                        class="search-fund-list__match"
+                      >
+                        {{ segment.text }}
+                      </span>
+                      <template v-else>
+                        {{ segment.text }}
+                      </template>
+                    </template>
+                  </span>
+                  <span
+                    v-if="item.tag"
+                    class="search-fund-list__tag"
+                  >
+                    {{ item.tag }}
+                  </span>
+                </div>
+                <span class="search-fund-list__description">
                   <template
-                    v-for="(segment, index) in buildHighlightSegments(item.label, query)"
-                    :key="`${item.value}-label-${index}`"
+                    v-for="(segment, index) in buildHighlightSegments(item.desc || '', query)"
+                    :key="`${item.value}-desc-${index}`"
                   >
                     <span
                       v-if="segment.matched"
@@ -256,36 +280,12 @@ const handleAdd = (code: string) => {
                     </template>
                   </template>
                 </span>
-                <span
-                  v-if="item.tag"
-                  class="search-fund-list__tag"
-                >
-                  {{ item.tag }}
-                </span>
               </div>
-              <span class="search-fund-list__description">
-                <template
-                  v-for="(segment, index) in buildHighlightSegments(item.desc || '', query)"
-                  :key="`${item.value}-desc-${index}`"
-                >
-                  <span
-                    v-if="segment.matched"
-                    class="search-fund-list__match"
-                  >
-                    {{ segment.text }}
-                  </span>
-                  <template v-else>
-                    {{ segment.text }}
-                  </template>
-                </template>
-              </span>
-            </div>
 
-            <div class="search-fund-list__metrics">
-              <span class="search-fund-list__quote">
-                {{ item.gsz ?? '--' }}
-              </span>
-              <div class="search-fund-list__action-column">
+              <div class="search-fund-list__metrics">
+                <span class="search-fund-list__quote">
+                  {{ item.gsz ?? '--' }}
+                </span>
                 <template v-if="item.gszzl !== undefined">
                   <span
                     :class="[
@@ -302,22 +302,8 @@ const handleAdd = (code: string) => {
                   v-else
                   class="search-fund-list__change-placeholder"
                 >--</span>
-
-                <button
-                  v-if="addedKeys.has(item.value)"
-                  class="search-fund-list__action-button search-fund-list__action-button--added"
-                >
-                  <Check class="search-fund-list__action-icon" /> 已添加
-                </button>
-                <button
-                  v-else
-                  class="search-fund-list__action-button search-fund-list__action-button--add"
-                  @click="handleAdd(item.value)"
-                >
-                  <Plus class="search-fund-list__action-icon" /> 添加
-                </button>
               </div>
-            </div>
+            </button>
           </li>
         </ul>
       </template>

@@ -68,11 +68,13 @@ describe("FundDetail", () => {
     const wrapper = mount(FundDetail, {
       props: {
         code: "110020",
+        isWatchlisted: true,
       },
       global: {
         stubs: {
           FundDetailHero: {
-            template: "<div data-test='hero-stub'>hero</div>",
+            props: ["isWatchlisted"],
+            template: "<div data-test='hero-stub'>{{ isWatchlisted ? 'yes' : 'no' }}</div>",
           },
           FundReturnChart: {
             template: "<div data-test='chart-stub'>chart</div>",
@@ -85,6 +87,7 @@ describe("FundDetail", () => {
     expect(wrapper.find("[data-test='fund-detail-sidebar']").exists()).toBe(false);
     expect(wrapper.find("[data-test='fund-detail-overview-rail']").exists()).toBe(true);
     expect(wrapper.find("[data-test='fund-detail-bottom']").exists()).toBe(false);
+    expect(wrapper.find("[data-test='hero-stub']").text()).toBe("yes");
     expect(wrapper.find("[data-test='fund-detail-main']").text()).toContain("chart");
     expect(wrapper.find("[data-test='fund-detail-main']").text()).toContain("交易状态");
     expect(wrapper.text()).toContain("交易状态");

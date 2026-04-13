@@ -28,6 +28,7 @@
 
   &__title-row {
     align-items: flex-start;
+    gap: 12px;
   }
 
   &__code {
@@ -63,6 +64,57 @@
     color: #7fb0ff;
     font-size: 10px;
     line-height: 1;
+  }
+
+  &__watchlist-toggle {
+    @include button-reset;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+    padding: 7px 12px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.03);
+    color: rgba(255, 255, 255, 0.72);
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    transition:
+      border-color 150ms ease,
+      background-color 150ms ease,
+      color 150ms ease,
+      box-shadow 150ms ease;
+
+    &:hover {
+      color: var(--color-text-primary);
+      border-color: rgba(255, 255, 255, 0.14);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    &--active {
+      border-color: rgba(47, 129, 247, 0.24);
+      background: rgba(47, 129, 247, 0.08);
+      color: rgba(255, 255, 255, 0.9);
+      box-shadow: 0 0 20px rgba(47, 129, 247, 0.08);
+    }
+  }
+
+  &__watchlist-toggle-marker {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 14px;
+    color: #9ec3ff;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  &__watchlist-toggle-label {
+    white-space: nowrap;
   }
 
   &__tag-list {
