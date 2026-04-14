@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { mount } from "@vue/test-utils";
 import { ref } from "vue";
 import FundDetail from "@/pages/Dashboard/components/FundDetail/FundDetail";
-import type { ACWorthPoint, FundProfile } from "@/types/fund";
+import type { ACWorthPoint, FundHoldingItem, FundIndustryItem, FundProfile } from "@/types/fund";
 
 const createProfile = (): FundProfile => ({
   code: "110020",
@@ -46,6 +46,37 @@ vi.mock("@/composables/fund/useFundDetail", () => ({
   useFundDetail: () => detailState,
 }));
 
+const holdingsState = {
+  holdings: ref<FundHoldingItem[]>([
+    {
+      rank: 1,
+      stockCode: "600519",
+      stockName: "贵州茅台",
+      marketCode: "SH",
+      ratio: 9.74,
+      shares: 100,
+      marketValue: 1000,
+    },
+  ]),
+  quarter: ref("2025Q4"),
+  industries: ref<FundIndustryItem[]>([
+    {
+      rank: 1,
+      name: "食品饮料",
+      ratio: 58.1,
+      marketValue: 1000,
+    },
+  ]),
+  industryQuarter: ref("2025Q4"),
+  isLoading: ref(false),
+  isError: ref(false),
+  retry: vi.fn(),
+};
+
+vi.mock("@/composables/fund/useFundHoldings", () => ({
+  useFundHoldings: () => holdingsState,
+}));
+
 describe("FundDetail", () => {
   beforeEach(() => {
     detailState.profile.value = createProfile();
@@ -62,6 +93,30 @@ describe("FundDetail", () => {
     detailState.isLoading.value = false;
     detailState.isError.value = false;
     detailState.retry.mockReset();
+    holdingsState.holdings.value = [
+      {
+        rank: 1,
+        stockCode: "600519",
+        stockName: "贵州茅台",
+        marketCode: "SH",
+        ratio: 9.74,
+        shares: 100,
+        marketValue: 1000,
+      },
+    ];
+    holdingsState.quarter.value = "2025Q4";
+    holdingsState.industries.value = [
+      {
+        rank: 1,
+        name: "食品饮料",
+        ratio: 58.1,
+        marketValue: 1000,
+      },
+    ];
+    holdingsState.industryQuarter.value = "2025Q4";
+    holdingsState.isLoading.value = false;
+    holdingsState.isError.value = false;
+    holdingsState.retry.mockReset();
   });
 
   it("renders fund-detail tabs and only shows the active panel", async () => {
@@ -87,29 +142,41 @@ describe("FundDetail", () => {
     expect(wrapper.find("[data-test='hero-stub']").text()).toBe("yes");
     expect(wrapper.find("[data-test='fund-detail-main']").text()).toContain("chart");
     expect(wrapper.text()).toContain("业绩走势");
-    expect(wrapper.text()).toContain("基金概况");
-    expect(wrapper.text()).toContain("重仓股票");
-    expect(wrapper.text()).toContain("行业分布");
+    expect(wrapper.text()).toContain("持仓明细");
     expect(wrapper.find("[data-test='fund-detail-tabs-indicator']").exists()).toBe(true);
     expect(wrapper.text()).not.toContain("交易状态");
 
-    await wrapper.get("[data-test='fund-detail-tab-overview']").trigger("click");
+    await wrapper.get("[data-test='fund-detail-tab-positions']").trigger("click");
 
     expect(wrapper.find("[data-test='chart-stub']").exists()).toBe(false);
     expect(wrapper.find("[data-test='fund-detail-overview-rail']").exists()).toBe(true);
     expect(wrapper.text()).toContain("交易状态");
     expect(wrapper.text()).toContain("基金经理");
     expect(wrapper.text()).toContain("基金规模");
-    expect(wrapper.text()).toContain("最新净值日");
+    expect(wrapper.text()).toContain("单位净值");
+    expect(wrapper.text()).toContain("累计净值");
+    expect(wrapper.text()).toContain("基金公司");
+    expect(wrapper.text()).toContain("贵州茅台");
+    expect(wrapper.text()).toContain("食品饮料");
+  });
 
-    await wrapper.get("[data-test='fund-detail-tab-holdings']").trigger("click");
+  it("shows an empty industry state when industry data is unavailable", async () => {
+    holdingsState.industries.value = [];
 
-    expect(wrapper.text()).toContain("重仓股票内容建设中");
-    expect(wrapper.find("[data-test='fund-detail-overview-rail']").exists()).toBe(false);
+    const wrapper = mount(FundDetail, {
+      props: {
+        code: "110020",
+      },
+      global: {
+        stubs: {
+          FundDetailHero: true,
+          FundReturnChart: true,
+        },
+      },
+    });
 
-    await wrapper.get("[data-test='fund-detail-tab-industry']").trigger("click");
-
-    expect(wrapper.text()).toContain("行业分布内容建设中");
+    await wrapper.get("[data-test='fund-detail-tab-positions']").trigger("click");
+    expect(wrapper.text()).toContain("当前基金暂未披露可用的行业配置数据");
   });
 
   it("renders a retry action when the detail request fails", async () => {

@@ -70,27 +70,3 @@ watch(currentMode, (_next, prev) => {
 </template>
 
 <style scoped lang="scss" src="./AuthForm.scss"></style>
-.slide-left-enter-active,
-.slide-left-leave-active,
-.slide-right-enter-active,
-.slide-right-leave-active {
-  transition: opacity 0.26s ease, transform 0.26s ease;
-}
-
-.slide-left-enter-from {
-  opacity: 0;
-  transform: translateX(28px);
-}
-.slide-left-leave-to {
-  opacity: 0;
-  transform: translateX(-28px);
-}
-
-.slide-right-enter-from {
-  opacity: 0;
-  transform: translateX(-28px);
-}
-.slide-right-leave-to {
-  opacity: 0;
-  transform: translateX(28px);
-}

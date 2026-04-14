@@ -6,7 +6,7 @@ import FundReturnChart from "../FundReturnChart";
 import FundDetailOverviewRail from "../FundDetailOverviewRail";
 import { BarChart2 } from "lucide-vue-next";
 
-type FundDetailTab = "performance" | "overview" | "holdings" | "industry";
+type FundDetailTab = "performance" | "positions";
 
 const props = defineProps<{
   code: string | null;
@@ -43,9 +43,7 @@ const {
 
 const tabs: Array<{ key: FundDetailTab; label: string; testId: string }> = [
   { key: "performance", label: "业绩走势", testId: "fund-detail-tab-performance" },
-  { key: "overview", label: "基金概况", testId: "fund-detail-tab-overview" },
-  { key: "holdings", label: "重仓股票", testId: "fund-detail-tab-holdings" },
-  { key: "industry", label: "行业分布", testId: "fund-detail-tab-industry" },
+  { key: "positions", label: "持仓明细", testId: "fund-detail-tab-positions" },
 ];
 
 const setTabButtonRef = (tab: FundDetailTab, element: unknown) => {
@@ -244,33 +242,10 @@ onBeforeUnmount(() => {
           />
 
           <FundDetailOverviewRail
-            v-else-if="activeTab === 'overview'"
-            :profile="profile"
-          />
-
-          <div
-            v-else-if="activeTab === 'holdings'"
-            class="fund-detail__placeholder-panel"
-          >
-            <p class="fund-detail__placeholder-title">
-              重仓股票内容建设中
-            </p>
-            <p class="fund-detail__placeholder-description">
-              后续会在这里展示基金的核心持仓明细与变化趋势
-            </p>
-          </div>
-
-          <div
             v-else
-            class="fund-detail__placeholder-panel"
-          >
-            <p class="fund-detail__placeholder-title">
-              行业分布内容建设中
-            </p>
-            <p class="fund-detail__placeholder-description">
-              后续会在这里展示行业配置结构与仓位变化
-            </p>
-          </div>
+            :profile="profile"
+            :code="code"
+          />
         </div>
       </div>
     </div>

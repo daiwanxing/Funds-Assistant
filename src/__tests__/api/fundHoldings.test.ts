@@ -46,6 +46,11 @@ const MOCK_INDUSTRY_RESPONSE = `
 var apidata={ content:"<div class='box'><div class='boxitem w790'><h4 class='t'><label class='left'><a href='http://fund.eastmoney.com/561380.html'>电网设备ETF国泰</a>&nbsp;&nbsp;2025年4季度行业配置明细</label><label class='right lab2 xq656'>截止至：<font class='px12'>2025-12-31</font></label></h4><div class='space0'></div><table class='w782 comm hypz'><thead><tr><th class='first'>序号</th><th>行业类别</th><th>行业变动详情</th><th>占净值比例</th><th class='last'>市值（万元）</th><th>行业市盈率</th></tr></thead><tbody><tr><td>1</td><td class='tol'>制造业</td><td><a href='hybd_561380_C_new.html'>变动详情</a></td><td class='tor'>84.47%</td><td class='tor'>46,631.73</td><td><img class='link-syl-detial' data-indcode='C' data-Y='2025' data-Q='4' src='//j5.dfcfw.com/image/201610/20161012111631.jpg'></td></tr><tr><td>2</td><td class='tol'>信息传输、软件和信息技术服务业</td><td><a href='hybd_561380_I_new.html'>变动详情</a></td><td class='tor'>12.07%</td><td class='tor'>6,664.26</td><td><img class='link-syl-detial' data-indcode='I' data-Y='2025' data-Q='4' src='//j5.dfcfw.com/image/201610/20161012111631.jpg'></td></tr></tbody></table></div></div>",arryear:[2025]};
 `;
 
+const MOCK_MULTI_QUARTER_INDUSTRY_CONTENT = `
+<div class='box'><div class='boxitem w790'><h4 class='t'><label class='left'>2025年4季度行业配置明细</label><label class='right lab2 xq656'>截止至：<font class='px12'>2025-12-31</font></label></h4><table class='w782 comm hypz'><tbody><tr><td>1</td><td class='tol'>制造业</td><td class='tor'>84.47%</td><td class='tor'>46,631.73</td></tr><tr><td>2</td><td class='tol'>信息传输、软件和信息技术服务业</td><td class='tor'>12.07%</td><td class='tor'>6,664.26</td></tr></tbody></table></div></div>
+<div class='box'><div class='boxitem w790'><h4 class='t'><label class='left'>2025年3季度行业配置明细</label><label class='right lab2 xq656'>截止至：<font class='px12'>2025-09-30</font></label></h4><table class='w782 comm hypz'><tbody><tr><td>1</td><td class='tol'>制造业</td><td class='tor'>83.61%</td><td class='tor'>10,857.68</td></tr><tr><td>2</td><td class='tol'>采矿业</td><td class='tor'>2.14%</td><td class='tor'>277.95</td></tr></tbody></table></div></div>
+`;
+
 describe("parseHoldingsHtml", () => {
   beforeEach(() => {
     mockedHttpGet.mockReset();
@@ -113,6 +118,28 @@ describe("parseHoldingsHtml", () => {
 
   it("extracts industry rows from hypz content", () => {
     const result = _parseIndustryHtml(_extractIndustryContent(MOCK_INDUSTRY_RESPONSE));
+
+    expect(result).not.toBeNull();
+    expect(result!.quarter).toBe("2025年4季度");
+    expect(result!.cutoffDate).toBe("2025-12-31");
+    expect(result!.industries).toEqual([
+      {
+        rank: 1,
+        name: "制造业",
+        ratio: 84.47,
+        marketValue: 46631.73,
+      },
+      {
+        rank: 2,
+        name: "信息传输、软件和信息技术服务业",
+        ratio: 12.07,
+        marketValue: 6664.26,
+      },
+    ]);
+  });
+
+  it("only keeps the latest quarter when multiple industry tables are present", () => {
+    const result = _parseIndustryHtml(MOCK_MULTI_QUARTER_INDUSTRY_CONTENT);
 
     expect(result).not.toBeNull();
     expect(result!.quarter).toBe("2025年4季度");

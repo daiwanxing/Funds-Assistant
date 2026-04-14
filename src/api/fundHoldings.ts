@@ -93,7 +93,10 @@ const parseIndustryHtml = (html: string): FundIndustrySnapshot | null => {
   const dateMatch = html.match(/截止至：.*?(\d{4}-\d{2}-\d{2})/);
   const cutoffDate = dateMatch ? dateMatch[1] : "";
 
-  const rowMatches = html.match(/<tr>[\s\S]*?<\/tr>/g) ?? [];
+  // Only parse the latest quarter table.
+  const firstTableEnd = html.indexOf("</tbody>");
+  const scope = firstTableEnd > 0 ? html.slice(0, firstTableEnd + 10) : html;
+  const rowMatches = scope.match(/<tr>[\s\S]*?<\/tr>/g) ?? [];
   const industries: FundIndustryItem[] = [];
 
   for (const row of rowMatches) {
