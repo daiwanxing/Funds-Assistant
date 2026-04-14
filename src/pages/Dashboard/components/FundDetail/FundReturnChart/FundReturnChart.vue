@@ -96,6 +96,11 @@ const initChart = () => {
   chart.setOption(buildOption());
 };
 
+const disposeChart = () => {
+  chart?.dispose();
+  chart = null;
+};
+
 const updateChart = () => {
   if (!chart) return;
   chart.setOption(buildOption(), { notMerge: true });
@@ -115,8 +120,7 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   resizeObserver?.disconnect();
-  chart?.dispose();
-  chart = null;
+  disposeChart();
 });
 
 watch(() => [props.data, props.isRising, props.period], updateChart, { deep: true });

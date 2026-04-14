@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
+import { useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
 import { Ellipsis, User, LogOut, LoaderCircle } from "lucide-vue-next";
 import { Dropdown, DropdownItem } from "@/components/ui/Dropdown";
@@ -10,6 +11,7 @@ const emit = defineEmits<{
   (e: "login"): void;
 }>();
 
+const router = useRouter();
 const auth = useAuthStore();
 
 const showLogoutDialog = ref(false);
@@ -17,7 +19,7 @@ const showLogoutDialog = ref(false);
 const isLoggingOut = computed(() => auth.signOut.isPending);
 
 const handleProfileClick = () => {
-  console.error("Navigate to profile...");
+  router.push("/settings");
 };
 
 const handleLogoutClick = () => {

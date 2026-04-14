@@ -64,7 +64,7 @@ describe("FundDetail", () => {
     detailState.retry.mockReset();
   });
 
-  it("renders the overview rail below the chart area", () => {
+  it("renders fund-detail tabs and only shows the active panel", async () => {
     const wrapper = mount(FundDetail, {
       props: {
         code: "110020",
@@ -84,22 +84,32 @@ describe("FundDetail", () => {
     });
 
     expect(wrapper.find("[data-test='fund-detail-main']").exists()).toBe(true);
-    expect(wrapper.find("[data-test='fund-detail-sidebar']").exists()).toBe(false);
-    expect(wrapper.find("[data-test='fund-detail-overview-rail']").exists()).toBe(true);
-    expect(wrapper.find("[data-test='fund-detail-bottom']").exists()).toBe(false);
     expect(wrapper.find("[data-test='hero-stub']").text()).toBe("yes");
     expect(wrapper.find("[data-test='fund-detail-main']").text()).toContain("chart");
-    expect(wrapper.find("[data-test='fund-detail-main']").text()).toContain("交易状态");
+    expect(wrapper.text()).toContain("业绩走势");
+    expect(wrapper.text()).toContain("基金概况");
+    expect(wrapper.text()).toContain("重仓股票");
+    expect(wrapper.text()).toContain("行业分布");
+    expect(wrapper.find("[data-test='fund-detail-tabs-indicator']").exists()).toBe(true);
+    expect(wrapper.text()).not.toContain("交易状态");
+
+    await wrapper.get("[data-test='fund-detail-tab-overview']").trigger("click");
+
+    expect(wrapper.find("[data-test='chart-stub']").exists()).toBe(false);
+    expect(wrapper.find("[data-test='fund-detail-overview-rail']").exists()).toBe(true);
     expect(wrapper.text()).toContain("交易状态");
     expect(wrapper.text()).toContain("基金经理");
     expect(wrapper.text()).toContain("基金规模");
     expect(wrapper.text()).toContain("最新净值日");
-    expect(wrapper.text()).not.toContain("AI 分析");
-    expect(wrapper.text()).not.toContain("持仓明细");
-    expect(wrapper.text()).not.toContain("行业拆解");
-    expect(wrapper.text()).not.toContain("基金概况");
-    expect(wrapper.text()).not.toContain("行业配置");
-    expect(wrapper.text()).not.toContain("基金公司");
+
+    await wrapper.get("[data-test='fund-detail-tab-holdings']").trigger("click");
+
+    expect(wrapper.text()).toContain("重仓股票内容建设中");
+    expect(wrapper.find("[data-test='fund-detail-overview-rail']").exists()).toBe(false);
+
+    await wrapper.get("[data-test='fund-detail-tab-industry']").trigger("click");
+
+    expect(wrapper.text()).toContain("行业分布内容建设中");
   });
 
   it("renders a retry action when the detail request fails", async () => {

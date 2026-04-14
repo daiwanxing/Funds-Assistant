@@ -29,7 +29,9 @@ describe("FundSavedList", () => {
       },
     });
 
-    expect(wrapper.text()).toContain("正在同步自选持仓");
+    expect(wrapper.text()).toContain("正在同步自选基金");
+    expect(wrapper.text()).toContain("正在拉取持仓列表与最新行情");
+    expect(wrapper.find(".saved-fund-list__skeleton-row").exists()).toBe(false);
     expect(wrapper.text()).not.toContain("添加你的第一只基金");
   });
 
@@ -70,5 +72,18 @@ describe("FundSavedList", () => {
 
     expect(wrapper.text()).toContain("03-28");
     expect(wrapper.text()).not.toContain("2026-03-28");
+  });
+
+  it("removes the estimated gain column from the watchlist table", () => {
+    const wrapper = mount(FundSavedList, {
+      props: {
+        items: [createFundItem("000001")],
+        loading: false,
+        activeCode: "000001",
+      },
+    });
+
+    expect(wrapper.text()).not.toContain("估算收益");
+    expect(wrapper.find(".saved-fund-list__gain").exists()).toBe(false);
   });
 });

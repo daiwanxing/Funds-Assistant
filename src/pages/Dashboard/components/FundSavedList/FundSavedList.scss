@@ -48,7 +48,6 @@
       width: 56px;
     }
 
-    &--gain,
     &--time {
       width: 52px;
     }
@@ -126,7 +125,6 @@
   }
 
   &__quote,
-  &__gain,
   &__updated-at {
     text-align: right;
   }
@@ -165,24 +163,6 @@
     }
   }
 
-  &__gain {
-    width: 52px;
-    font-size: 12px;
-    font-weight: 700;
-
-    &--rise {
-      @include status-text(var(--color-rise-primary));
-    }
-
-    &--fall {
-      @include status-text(var(--color-fall-primary));
-    }
-
-    &--flat {
-      color: rgba(255, 255, 255, 0.3);
-    }
-  }
-
   &__updated-at {
     width: 52px;
     color: rgba(255, 255, 255, 0.3);
@@ -192,98 +172,10 @@
   &__loading-state {
     display: flex;
     flex: 1;
-    flex-direction: column;
-    gap: 12px;
-    overflow: hidden;
-    padding: 16px;
-  }
-
-  &__loading-copy {
-    display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 8px;
-    padding: 48px 0 24px;
-  }
-
-  &__loading-title {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    color: #7fb0ff;
-    font-size: 13px;
-    letter-spacing: 0.04em;
-  }
-
-  &__loading-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 999px;
-    background: var(--color-brand-primary);
-    animation: saved-fund-list-pulse 1.2s ease-in-out infinite;
-  }
-
-  &__loading-description {
-    color: rgba(255, 255, 255, 0.35);
-    font-size: 11px;
-    letter-spacing: 0.04em;
-  }
-
-  &__skeleton-row {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 20px;
-    padding: 12px 4px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-    animation: saved-fund-list-pulse 1.2s ease-in-out infinite;
-  }
-
-  &__skeleton-meta {
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  &__skeleton-line,
-  &__skeleton-chip {
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.06);
-  }
-
-  &__skeleton-line--primary {
-    width: 136px;
-    height: 14px;
-  }
-
-  &__skeleton-line--secondary {
-    width: 96px;
-    height: 12px;
-    background: rgba(255, 255, 255, 0.04);
-  }
-
-  &__skeleton-metrics {
-    display: flex;
-    gap: 6px;
-    padding-top: 2px;
-  }
-
-  &__skeleton-chip {
-    height: 16px;
-
-    &--quote {
-      width: 44px;
-    }
-
-    &--change {
-      width: 56px;
-    }
-
-    &--gain {
-      width: 52px;
-    }
+    overflow: hidden;
+    padding: 16px;
   }
 
   &__empty-state {

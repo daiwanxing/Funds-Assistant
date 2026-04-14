@@ -108,7 +108,68 @@
   }
 
   &__chart {
+    flex: 1;
     min-height: 0;
+    min-width: 0;
+    width: 100%;
+  }
+
+  &__tabs {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    padding: 10px 20px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  &__tab {
+    appearance: none;
+    background: transparent;
+    position: relative;
+    min-width: 0;
+    padding: 0 0 16px;
+    border: 0;
+    outline: 0;
+    color: rgba(255, 255, 255, 0.42);
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 1;
+    cursor: pointer;
+    transition:
+      color 0.2s ease,
+      opacity 0.2s ease;
+
+    &:hover {
+      color: rgba(255, 255, 255, 0.72);
+    }
+
+    &--active {
+      color: rgba(255, 255, 255, 0.92);
+    }
+  }
+
+  &__tabs-indicator {
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    height: 4px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.92);
+    pointer-events: none;
+    transition:
+      transform 0.22s ease,
+      width 0.22s ease,
+      opacity 0.18s ease;
+  }
+
+  &__tab-panel {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-height: 0;
+    min-width: 0;
   }
 
   &__chart-skeleton {
@@ -186,6 +247,32 @@
   &__skeleton-chart {
     height: 520px;
     background: rgba(255, 255, 255, 0.04);
+  }
+
+  &__placeholder-panel {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 24px;
+    text-align: center;
+  }
+
+  &__placeholder-title {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.58);
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  &__placeholder-description {
+    max-width: 320px;
+    margin: 0;
+    color: rgba(255, 255, 255, 0.32);
+    font-size: 12px;
+    line-height: 1.6;
   }
 }
 

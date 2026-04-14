@@ -2,6 +2,7 @@
 import type { FundItem } from "@/types/fund";
 import { formatQuoteTime } from "@/utils/formatters";
 import { BarChart2, Info } from 'lucide-vue-next';
+import ListLoadingState from "../ListLoadingState";
 
 defineProps<{
   items: FundItem[];
@@ -23,7 +24,6 @@ const emit = defineEmits<{
       <div class="saved-fund-list__head-metrics">
         <span class="saved-fund-list__head-metric saved-fund-list__head-metric--quote">估值</span>
         <span class="saved-fund-list__head-metric saved-fund-list__head-metric--change">涨跌幅</span>
-        <span class="saved-fund-list__head-metric saved-fund-list__head-metric--gain">估算收益</span>
         <span class="saved-fund-list__head-metric saved-fund-list__head-metric--time">更新时间</span>
       </div>
     </div>
@@ -68,20 +68,6 @@ const emit = defineEmits<{
               {{ Number(item.gszzl) > 0 ? '+' : '' }}{{ item.gszzl || '0.00' }}%
             </span>
           </span>
-
-          <span
-            :class="[
-              'saved-fund-list__gain',
-              {
-                'saved-fund-list__gain--rise': item.gains > 0,
-                'saved-fund-list__gain--fall': item.gains < 0,
-                'saved-fund-list__gain--flat': item.gains === 0,
-              },
-            ]"
-          >
-            {{ item.gains > 0 ? '+¥' + item.gains.toFixed(2) : item.gains < 0 ? '-¥' + Math.abs(item.gains).toFixed(2) : '¥0' }}
-          </span>
-
           <span class="saved-fund-list__updated-at">
             {{ formatQuoteTime(item.gztime) }}
           </span>
@@ -94,31 +80,10 @@ const emit = defineEmits<{
       v-else-if="loading"
       class="saved-fund-list__loading-state"
     >
-      <div class="saved-fund-list__loading-copy">
-        <div class="saved-fund-list__loading-title">
-          <span class="saved-fund-list__loading-dot" />
-          <span>正在同步自选持仓</span>
-        </div>
-        <p class="saved-fund-list__loading-description">
-          正在拉取最新估值与收益数据
-        </p>
-      </div>
-
-      <div
-        v-for="index in 4"
-        :key="index"
-        class="saved-fund-list__skeleton-row"
-      >
-        <div class="saved-fund-list__skeleton-meta">
-          <div class="saved-fund-list__skeleton-line saved-fund-list__skeleton-line--primary" />
-          <div class="saved-fund-list__skeleton-line saved-fund-list__skeleton-line--secondary" />
-        </div>
-        <div class="saved-fund-list__skeleton-metrics">
-          <div class="saved-fund-list__skeleton-chip saved-fund-list__skeleton-chip--quote" />
-          <div class="saved-fund-list__skeleton-chip saved-fund-list__skeleton-chip--change" />
-          <div class="saved-fund-list__skeleton-chip saved-fund-list__skeleton-chip--gain" />
-        </div>
-      </div>
+      <ListLoadingState
+        title="正在同步自选基金"
+        description="正在拉取持仓列表与最新行情"
+      />
     </div>
 
     <div

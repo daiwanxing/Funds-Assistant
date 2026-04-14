@@ -2,11 +2,14 @@
 
 .fund-return-chart {
   display: flex;
+  flex: 1;
   flex-direction: column;
   min-height: 0;
+  min-width: 0;
   height: 100%;
   overflow: hidden;
   padding: 20px;
+  width: 100%;
 
   &__toolbar {
     display: flex;

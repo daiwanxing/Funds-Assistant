@@ -386,7 +386,7 @@ describe("HomePage selection behavior", () => {
     const wrapper = await mountPage();
 
     expect(wrapper.text()).not.toContain("添加你的第一只基金");
-    expect(wrapper.text()).toContain("正在同步自选持仓");
+    expect(wrapper.text()).toContain("正在同步自选基金");
   });
 
   it("keeps the dashboard shell visible while preferences are still booting", async () => {
@@ -397,7 +397,7 @@ describe("HomePage selection behavior", () => {
     const wrapper = await mountPage();
 
     expect(wrapper.get("[data-test='saved-count']").text()).toBe("0");
-    expect(wrapper.text()).toContain("正在同步自选持仓");
+    expect(wrapper.text()).toContain("正在同步自选基金");
     expect(wrapper.text()).not.toContain("自选列表为空");
   });
 

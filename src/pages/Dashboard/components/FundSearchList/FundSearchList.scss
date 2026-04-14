@@ -45,39 +45,6 @@
     margin-top: -40px;
   }
 
-  &__loading-visual {
-    overflow: visible;
-  }
-
-  &__loading-track {
-    color: rgba(255, 255, 255, 0.04);
-  }
-
-  &__loading-line {
-    color: rgba(47, 129, 247, 0.6);
-  }
-
-  &__loading-copy {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 6px;
-    margin-top: 32px;
-  }
-
-  &__loading-title {
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 13px;
-    font-weight: 500;
-    letter-spacing: 0.04em;
-  }
-
-  &__loading-description {
-    color: rgba(255, 255, 255, 0.3);
-    font-size: 11px;
-    letter-spacing: 0.04em;
-  }
-
   &__list {
     margin: 0;
     padding: 0;

@@ -58,7 +58,6 @@ export const createFundReturnChartOption = ({
 }): echarts.EChartsCoreOption => {
   return {
     animation: true,
-    animationDuration: 400,
     grid: {
       top: 10,
       right: 18,
