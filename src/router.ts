@@ -23,6 +23,11 @@ const routes = [
     name: "AuthCallback",
     component: () => import("./pages/Authentication/Callback/CallbackPage.vue"),
   },
+  {
+    path: "/settings",
+    name: "Settings",
+    component: () => import("./pages/Settings/SettingsPage.vue"),
+  },
 ];
 
 const router = createRouter({
